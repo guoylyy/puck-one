@@ -1,0 +1,41 @@
+
+.icon-chat {
+  background-image: url('../img/icons.png');
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .icon-chat {
+    background-image: url('../img/icons@2x.png');
+    background-size: 23px 108px;
+  }
+}
+
+.icon-chat-menu-active {
+  background-position: -0px -0px;
+  width: 23px;
+  height: 16px;
+}
+.icon-chat-menu {
+  background-position: -0px -16px;
+  width: 23px;
+  height: 16px;
+}
+.icon-chat-keyboard-active {
+  background-position: -0px -32px;
+  width: 23px;
+  height: 18px;
+}
+.icon-chat-keyboard {
+  background-position: -0px -50px;
+  width: 23px;
+  height: 18px;
+}
+.icon-chat-microphone-active {
+  background-position: -0px -67px;
+  width: 16px;
+  height: 21px;
+}
+.icon-chat-microphone {
+  background-position: -0px -88px;
+  width: 16px;
+  height: 21px;
+}

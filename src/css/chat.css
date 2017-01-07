@@ -1,0 +1,19 @@
+.chat-list {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #f6f6f6; }
+
+.chat-footer {
+  height: 2.4rem;
+  color: #999;
+  line-height: 2.4rem;
+  font-size: .7rem;
+  text-align: center; }
+  .chat-footer .icon-chat {
+    margin-right: 0.3rem; }
+
+.chat-footer ~ .content {
+  bottom: 2.4rem; }
