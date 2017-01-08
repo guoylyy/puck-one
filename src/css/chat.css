@@ -4,7 +4,63 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #f6f6f6; }
+  background-color: #f6f6f6;
+  padding: 0 .5rem;
+  overflow: auto; }
+  .chat-list .chat-item {
+    clear: both;
+    overflow: auto;
+    padding: .5rem 0; }
+    .chat-list .chat-item .chat-avatar {
+      float: left;
+      margin-top: 0.5rem; }
+      .chat-list .chat-item .chat-avatar img {
+        width: 1.5rem;
+        height: 1.5rem; }
+    .chat-list .chat-item .chat-content {
+      float: left;
+      width: 12rem;
+      padding-left: .5rem; }
+      .chat-list .chat-item .chat-content .chat-user .chat-user-name {
+        font-size: .7rem;
+        color: #333234; }
+      .chat-list .chat-item .chat-content .chat-user .chat-user-title {
+        font-size: .2rem;
+        color: #9b9b9b; }
+      .chat-list .chat-item .chat-content .chat-text-msg {
+        background-color: #fff;
+        border-radius: .2rem;
+        margin-top: .1rem;
+        padding: .4rem .5rem; }
+        .chat-list .chat-item .chat-content .chat-text-msg p {
+          font-size: .7rem;
+          margin: 0; }
+      .chat-list .chat-item .chat-content .chat-audio-msg {
+        overflow: auto; }
+        .chat-list .chat-item .chat-content .chat-audio-msg .audio-bar {
+          float: left;
+          background-color: #4a90e2;
+          border-radius: .2rem;
+          margin-top: .1rem;
+          height: 1.7rem;
+          width: 8rem; }
+        .chat-list .chat-item .chat-content .chat-audio-msg .audio-time {
+          float: left;
+          font-size: .7rem;
+          margin: .8rem 0 0 .3rem; }
+    .chat-list .chat-item.me .chat-avatar {
+      float: right; }
+    .chat-list .chat-item.me .chat-content {
+      float: right;
+      padding-left: 0;
+      padding-right: .5rem; }
+      .chat-list .chat-item.me .chat-content .chat-user {
+        text-align: right; }
+      .chat-list .chat-item.me .chat-content .chat-audio-msg .audio-bar {
+        float: right; }
+      .chat-list .chat-item.me .chat-content .chat-audio-msg .audio-time {
+        float: right;
+        margin: .8rem .3rem 0 0; }
 
 .chat-footer {
   height: 2.4rem;

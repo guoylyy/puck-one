@@ -1,5 +1,10 @@
 .bar {
   background-color: #fff; }
+  .bar .button-link {
+    color: #4a4a4a; }
+
+.title {
+  color: #000; }
 
 .icon-chat {
   display: inline-block;
