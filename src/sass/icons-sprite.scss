@@ -1,0 +1,41 @@
+$menu-active: -0px -0px 23px 16px;
+$menu: -0px -16px 23px 16px;
+$keyboard-active: -0px -32px 23px 18px;
+$keyboard: -0px -50px 23px 18px;
+$microphone-active: -0px -67px 16px 21px;
+$microphone: -0px -88px 16px 21px;
+@mixin sprite-width($sprite) {
+  width: nth($sprite, 3);
+}
+@mixin sprite-height($sprite) {
+  height: nth($sprite, 4);
+}
+@function sprite-width($sprite) {
+   @return nth($sprite, 3);
+}
+@function sprite-height($sprite) {
+   @return nth($sprite, 4);
+}
+@mixin sprite-position($sprite) {
+  $sprite-offset-x: nth($sprite, 1);
+  $sprite-offset-y: nth($sprite, 2);
+  background-position: $sprite-offset-x $sprite-offset-y;
+}
+@mixin sprite($sprite, $display: block) {
+   @include sprite-position($sprite);
+  background-repeat: no-repeat;
+  overflow: hidden;
+  display: $display;
+  @include sprite-width($sprite);
+  @include sprite-height($sprite);
+}
+
+.icon-chat {
+  background-image: url('../img/icons.png');
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .icon-chat {
+    background-image: url('../img/icons@2x.png');
+    background-size: 23px 108px;
+  }
+}

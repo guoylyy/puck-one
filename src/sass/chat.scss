@@ -29,7 +29,7 @@
 					color: #333234;
 				}
 				.chat-user-title {
-					font-size: .2rem;
+					font-size: .5rem;
 					color: #9b9b9b;
 				}
 			}
@@ -56,6 +56,7 @@
 				.audio-time {
 					float: left;
 					font-size: .7rem;
+					color: #333234;
 					margin: .8rem 0 0 .3rem;
 				}
 			}
@@ -93,10 +94,99 @@
 	font-size: .7rem;
 	text-align: center;
 	.icon-chat {
-		margin-right: 0.3rem;
+		margin-right: .3rem;
+	}
+	.chat-audio, .chat-text, .chat-material {
+		&.active {
+			color: #333234;
+		}
+	}
+	&.chat-text-active {
+		height: 4.8rem;
+		.text-input-section {
+			position: relative;
+			display: block;
+			background-color: #f6f6f6;
+			margin: 0 -.5rem;
+			height: 2.4rem;
+			.searchbar {
+				background-color: #f6f6f6;
+				.search-input {
+					input {
+						height: 1.6rem;
+					}
+				}
+			}
+			.button {
+				top: 0;
+				height: 1.6rem;
+				line-height: 1.6rem;
+				border-radius: .2rem;
+				&.button-fill {
+					background-color: #4a90e2;
+				}
+			}
+			.row {
+				.col-80 {
+					margin-left: 3%;
+					width: 77%;
+				}
+				.col-20 {
+					width: 14%;
+					margin-left: 3%;
+					margin-right: 3%;
+				}
+			}
+		}
+	}
+	&.chat-audio-active {
+		height: 7rem;
+		.audio-input-section {
+			position: relative;
+			display: block;
+			background-color: #f6f6f6;
+			margin: 0 -.5rem;
+			height: 4.6rem;
+		}
+	}
+	.text-input-section, .audio-input-section {
+		display: none;
+	}
+}
+
+.text-input-section:before, .audio-input-section:before {
+	content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: auto;
+    right: auto;
+    height: 1px;
+    width: 100%;
+    background-color: #e7e7e7;
+    display: block;
+    z-index: 15;
+    -webkit-transform-origin: 50% 0;
+    transform-origin: 50% 0;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 3) {
+	.text-input-section:before, .audio-input-section:before {
+		-webkit-transform:scaleY(.33);
+    	transform: scaleY(.33);
+	}
+}
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+	.text-input-section:before, .audio-input-section:before {
+		-webkit-transform:scaleY(.5);
+		transform: scaleY(.5);
 	}
 }
 
 .chat-footer ~ .content {
 	bottom: 2.4rem;
+}
+
+.chat-footer.chat-text-active ~ .content {
+	bottom: 4.8rem;
 }

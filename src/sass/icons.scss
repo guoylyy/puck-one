@@ -1,0 +1,29 @@
+@import 'icons-sprite';
+
+.icon-chat {
+	vertical-align: middle;
+}
+
+.icon-chat-microphone {
+	@include sprite($microphone, inline-block);
+}
+
+.active .icon-chat-microphone {
+	@include sprite($microphone-active, inline-block);
+}
+
+.icon-chat-keyboard {
+	@include sprite($keyboard, inline-block);
+}
+
+.active .icon-chat-keyboard {
+	@include sprite($keyboard-active, inline-block);
+}
+
+.icon-chat-menu {
+	@include sprite($menu, inline-block);
+}
+
+.active .icon-chat-menu {
+	@include sprite($menu-active, inline-block);
+}

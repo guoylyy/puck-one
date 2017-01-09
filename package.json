@@ -13,7 +13,8 @@
     "gulp": "^3.9.1",
     "gulp-if": "^2.0.2",
     "gulp-sass": "^3.0.0",
-    "sprity": "^1.0.8"
+    "sprity": "^1.0.8",
+    "sprity-sass": "^1.0.4"
   },
   "dependencies": {
     "leancloud-realtime": "^3.3.3",

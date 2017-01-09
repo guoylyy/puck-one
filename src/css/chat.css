@@ -25,7 +25,7 @@
         font-size: .7rem;
         color: #333234; }
       .chat-list .chat-item .chat-content .chat-user .chat-user-title {
-        font-size: .2rem;
+        font-size: .5rem;
         color: #9b9b9b; }
       .chat-list .chat-item .chat-content .chat-text-msg {
         background-color: #fff;
@@ -47,6 +47,7 @@
         .chat-list .chat-item .chat-content .chat-audio-msg .audio-time {
           float: left;
           font-size: .7rem;
+          color: #333234;
           margin: .8rem 0 0 .3rem; }
     .chat-list .chat-item.me .chat-avatar {
       float: right; }
@@ -69,7 +70,73 @@
   font-size: .7rem;
   text-align: center; }
   .chat-footer .icon-chat {
-    margin-right: 0.3rem; }
+    margin-right: .3rem; }
+  .chat-footer .chat-audio.active, .chat-footer .chat-text.active, .chat-footer .chat-material.active {
+    color: #333234; }
+  .chat-footer.chat-text-active {
+    height: 4.8rem; }
+    .chat-footer.chat-text-active .text-input-section {
+      position: relative;
+      display: block;
+      background-color: #f6f6f6;
+      margin: 0 -.5rem;
+      height: 2.4rem; }
+      .chat-footer.chat-text-active .text-input-section .searchbar {
+        background-color: #f6f6f6; }
+        .chat-footer.chat-text-active .text-input-section .searchbar .search-input input {
+          height: 1.6rem; }
+      .chat-footer.chat-text-active .text-input-section .button {
+        top: 0;
+        height: 1.6rem;
+        line-height: 1.6rem;
+        border-radius: .2rem; }
+        .chat-footer.chat-text-active .text-input-section .button.button-fill {
+          background-color: #4a90e2; }
+      .chat-footer.chat-text-active .text-input-section .row .col-80 {
+        margin-left: 3%;
+        width: 77%; }
+      .chat-footer.chat-text-active .text-input-section .row .col-20 {
+        width: 14%;
+        margin-left: 3%;
+        margin-right: 3%; }
+  .chat-footer.chat-audio-active {
+    height: 7rem; }
+    .chat-footer.chat-audio-active .audio-input-section {
+      position: relative;
+      display: block;
+      background-color: #f6f6f6;
+      margin: 0 -.5rem;
+      height: 4.6rem; }
+  .chat-footer .text-input-section, .chat-footer .audio-input-section {
+    display: none; }
+
+.text-input-section:before, .audio-input-section:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: auto;
+  right: auto;
+  height: 1px;
+  width: 100%;
+  background-color: #e7e7e7;
+  display: block;
+  z-index: 15;
+  -webkit-transform-origin: 50% 0;
+  transform-origin: 50% 0; }
+
+@media only screen and (-webkit-min-device-pixel-ratio: 3) {
+  .text-input-section:before, .audio-input-section:before {
+    -webkit-transform: scaleY(0.33);
+    transform: scaleY(0.33); } }
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+  .text-input-section:before, .audio-input-section:before {
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5); } }
 
 .chat-footer ~ .content {
   bottom: 2.4rem; }
+
+.chat-footer.chat-text-active ~ .content {
+  bottom: 4.8rem; }

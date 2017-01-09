@@ -1,0 +1,7 @@
+.icon-chat {
+  background-image: url("../img/icons.png"); }
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .icon-chat {
+    background-image: url("../img/icons@2x.png");
+    background-size: 23px 108px; } }
