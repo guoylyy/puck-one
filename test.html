@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>笃师一对一</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+</head>
+<body>
+	<script src="./node_modules/leancloud-storage/dist/av.js"></script>
+	<script src="./node_modules/leancloud-realtime/dist/realtime.browser.js"></script>
+	<script src="./node_modules/leancloud-realtime-plugin-typed-messages/dist/typed-messages.js"></script>
+	<script>
+		// 初始化存储 SDK
+		AV.init({
+		  	appId: 'XJroNb2m8eHOGobg6WKN16K6-gzGzoHsz', 
+		  	appKey:'rGGy6ziKb0uxnfrwp6T37gmK',
+		});
+		// 初始化实时通讯 SDK
+		var Realtime = AV.Realtime;
+		var realtime = new Realtime({
+		  	appId: 'XJroNb2m8eHOGobg6WKN16K6-gzGzoHsz',
+		  	region: 'cn',
+		  	plugins: [AV.TypedMessagesPlugin], // 注册富媒体消息插件
+		});
+
+		/*
+			需要替换为实际进行对话的用户的唯一标识
+		 */
+		var clientID1 = 'Oliver', clientID2 = 'Mikey';
+		realtime.createIMClient(clientID2).then(function (currClient) {
+			return currClient.createConversation({
+				members: [clientID1],
+				name: clientID1 + '&' + clientID2,
+				unique: true
+			});
+		}).then(function (conversation) {
+			conversation.send(new AV.TextMessage('郭意亮同学, 你的问题如下,再去看看第三天的材料'));
+		}).catch(console.error);
+	</script>
+</body>
+</html>

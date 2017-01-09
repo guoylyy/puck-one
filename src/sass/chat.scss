@@ -1,12 +1,6 @@
 .chat-list {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
 	background-color: #f6f6f6;
 	padding: 0 .5rem;
-	overflow: auto;
 	.chat-item {
 		clear: both;
 		overflow: auto;
@@ -31,9 +25,12 @@
 				.chat-user-title {
 					font-size: .5rem;
 					color: #9b9b9b;
+					margin-left: .2rem;
 				}
 			}
 			.chat-text-msg {
+				float: left;
+				max-width: 12rem;
 				background-color: #fff;
 				border-radius: .2rem;
 				margin-top: .1rem;
@@ -71,6 +68,9 @@
 				padding-right: .5rem;
 				.chat-user {
 					text-align: right;
+				}
+				.chat-text-msg {
+					float: right;
 				}
 				.chat-audio-msg {
 					.audio-bar {
@@ -114,6 +114,8 @@
 				.search-input {
 					input {
 						height: 1.6rem;
+						border: 1px solid #979797;
+						border-radius: .2rem;
 					}
 				}
 			}

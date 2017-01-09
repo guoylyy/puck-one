@@ -1,12 +1,6 @@
 .chat-list {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
   background-color: #f6f6f6;
-  padding: 0 .5rem;
-  overflow: auto; }
+  padding: 0 .5rem; }
   .chat-list .chat-item {
     clear: both;
     overflow: auto;
@@ -26,8 +20,11 @@
         color: #333234; }
       .chat-list .chat-item .chat-content .chat-user .chat-user-title {
         font-size: .5rem;
-        color: #9b9b9b; }
+        color: #9b9b9b;
+        margin-left: .2rem; }
       .chat-list .chat-item .chat-content .chat-text-msg {
+        float: left;
+        max-width: 12rem;
         background-color: #fff;
         border-radius: .2rem;
         margin-top: .1rem;
@@ -57,6 +54,8 @@
       padding-right: .5rem; }
       .chat-list .chat-item.me .chat-content .chat-user {
         text-align: right; }
+      .chat-list .chat-item.me .chat-content .chat-text-msg {
+        float: right; }
       .chat-list .chat-item.me .chat-content .chat-audio-msg .audio-bar {
         float: right; }
       .chat-list .chat-item.me .chat-content .chat-audio-msg .audio-time {
@@ -84,7 +83,9 @@
       .chat-footer.chat-text-active .text-input-section .searchbar {
         background-color: #f6f6f6; }
         .chat-footer.chat-text-active .text-input-section .searchbar .search-input input {
-          height: 1.6rem; }
+          height: 1.6rem;
+          border: 1px solid #979797;
+          border-radius: .2rem; }
       .chat-footer.chat-text-active .text-input-section .button {
         top: 0;
         height: 1.6rem;

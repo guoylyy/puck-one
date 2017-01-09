@@ -20,6 +20,7 @@
     "leancloud-realtime": "^3.3.3",
     "leancloud-realtime-plugin-typed-messages": "^1.0.0",
     "leancloud-storage": "^1.5.3",
+    "mustache": "^2.3.0",
     "seajs": "^3.0.2",
     "sm": "^0.2.12-rc.1",
     "weui": "^1.1.0"
