@@ -1,6 +1,7 @@
 define(function (require, exports, module) {
 	var chatPage = {
 		initialize: function () {
+			this.bindEvents();
 			this.initConversation();
 			$.init();
 		},
@@ -40,7 +41,6 @@ define(function (require, exports, module) {
 						break;
 					}
 				});
-				self.bindEvents();
 			}).catch(console.error);
 		},
 		addMessage: function (content, type, fromMe) {
@@ -65,6 +65,11 @@ define(function (require, exports, module) {
 			var target = event.currentTarget, 
 				$target = $(target), $parent = $target.closest('.chat-footer'),
 				classList = 'chat-audio-active chat-text-active chat-material-active';
+
+			if($target.hasClass('chat-material')) {
+				$.router.load("#material-list");
+				return;
+			}
 
 			if (!$target.hasClass('active')) {
 				$target.siblings().removeClass('active');

@@ -192,3 +192,32 @@
 .chat-footer.chat-text-active ~ .content {
 	bottom: 4.8rem;
 }
+
+.material-list {
+	.list-block {
+		.list-group {
+			.list-title {
+				font-size: .6rem;
+				color: #9B9B9B;
+				.item-content {
+					min-height: 1.1rem;
+					.item-inner {
+						min-height: 1.1rem;
+						padding-top: .4rem;
+						padding-bottom: .35rem;
+					}
+				}
+			}
+			.item-content {
+				.item-inner {
+					padding-top: .75rem;
+					padding-bottom: .7rem;
+				}
+				.item-after {
+					font-size: .6rem;
+					color: #9B9B9B;
+				}
+			}
+		}
+	}
+}
