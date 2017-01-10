@@ -35,7 +35,8 @@ define(function (require, exports, module) {
 				conversation.on('message', function (message) {
 					switch(message.type) {
 						case AV.TextMessage.TYPE:
-							self.addMessage(message.getText(), message.type, message.from == clientID1);
+							if(message.from != clientID1)
+								self.addMessage(message.getText(), message.type, false);
 						break;
 					}
 				});
@@ -90,7 +91,8 @@ define(function (require, exports, module) {
 				return;
 			}
 
-			self.conversation.send(new AV.TextMessage(text)).then(function () {
+			self.conversation.send(new AV.TextMessage(text)).then(function (message) {
+				self.addMessage(message.getText(), message.type, true);
 				$input.val('');
 			}).catch(console.error);
 		},
