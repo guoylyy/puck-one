@@ -1,16 +1,17 @@
 .chat-list {
-	background-color: #f6f6f6;
 	padding: 0 .5rem;
 	.chat-item {
 		clear: both;
 		overflow: auto;
 		padding: .5rem 0;
+		color: #333234;
 		.chat-avatar {
 			float: left;
 			margin-top: 0.5rem;
 			img {
 				width: 1.5rem;
 				height: 1.5rem;
+				border-radius: 50%;
 			}
 		}
 		.chat-content {
@@ -57,6 +58,32 @@
 					margin: .8rem 0 0 .3rem;
 				}
 			}
+			.chat-material-msg {
+				float: left;
+				min-width: 11rem;
+				max-width: 12rem;
+				background-color: #fff;
+				border-radius: .2rem;
+				margin-top: .1rem;
+				padding: 0 .5rem;
+				.material-title {
+					line-height: 2.2rem;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+					overflow: hidden;
+				}
+				.material-line {
+					height: 1px;
+					background-color: #d9dadc;
+				}
+				.material-author {
+					font-size: .5rem;
+					line-height: 2rem;
+					i {
+						float: right;
+					}
+				}
+			}
 		}
 		&.me {
 			.chat-avatar {
@@ -81,6 +108,9 @@
 						float: right;
 						margin: .8rem .3rem 0 0;
 					}
+				}
+				.chat-material-msg {
+					float: right;
 				}
 			}
 		}
@@ -177,11 +207,19 @@
 		-webkit-transform:scaleY(.33);
     	transform: scaleY(.33);
 	}
+	.chat-list .chat-item .chat-content .chat-material-msg .material-line {
+		-webkit-transform:scaleY(.33);
+    	transform: scaleY(.33);
+	}
 }
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
 	.text-input-section:before, .audio-input-section:before {
 		-webkit-transform:scaleY(.5);
 		transform: scaleY(.5);
+	}
+	.chat-list .chat-item .chat-content .chat-material-msg .material-line {
+		-webkit-transform:scaleY(.5);
+    	transform: scaleY(.5);
 	}
 }
 
@@ -216,6 +254,40 @@
 				.item-after {
 					font-size: .6rem;
 					color: #9B9B9B;
+				}
+			}
+		}
+	}
+}
+
+.student-list {
+	.list-block {
+		margin: .75rem 0;
+		.item-content {
+			.item-media {
+				img {
+					width: 1.8rem;
+					height: 1.8rem;
+					border-radius: 50%;
+				}
+			}
+			.item-inner {
+				.item-after {
+					font-size: .6rem;
+					display: inline-block;
+					padding: .1rem .6rem;
+					border-radius: .5rem;
+					&.replied {
+						color: #000;
+						background-color: #d9dadc;
+					}
+					&.waiting {
+						color: #fff;
+						background-color: #4a90e2;
+					}
+					&.closed {
+						
+					}
 				}
 			}
 		}

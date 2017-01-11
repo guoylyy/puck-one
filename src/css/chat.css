@@ -1,16 +1,17 @@
 .chat-list {
-  background-color: #f6f6f6;
   padding: 0 .5rem; }
   .chat-list .chat-item {
     clear: both;
     overflow: auto;
-    padding: .5rem 0; }
+    padding: .5rem 0;
+    color: #333234; }
     .chat-list .chat-item .chat-avatar {
       float: left;
       margin-top: 0.5rem; }
       .chat-list .chat-item .chat-avatar img {
         width: 1.5rem;
-        height: 1.5rem; }
+        height: 1.5rem;
+        border-radius: 50%; }
     .chat-list .chat-item .chat-content {
       float: left;
       width: 12rem;
@@ -46,6 +47,27 @@
           font-size: .7rem;
           color: #333234;
           margin: .8rem 0 0 .3rem; }
+      .chat-list .chat-item .chat-content .chat-material-msg {
+        float: left;
+        min-width: 11rem;
+        max-width: 12rem;
+        background-color: #fff;
+        border-radius: .2rem;
+        margin-top: .1rem;
+        padding: 0 .5rem; }
+        .chat-list .chat-item .chat-content .chat-material-msg .material-title {
+          line-height: 2.2rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden; }
+        .chat-list .chat-item .chat-content .chat-material-msg .material-line {
+          height: 1px;
+          background-color: #d9dadc; }
+        .chat-list .chat-item .chat-content .chat-material-msg .material-author {
+          font-size: .5rem;
+          line-height: 2rem; }
+          .chat-list .chat-item .chat-content .chat-material-msg .material-author i {
+            float: right; }
     .chat-list .chat-item.me .chat-avatar {
       float: right; }
     .chat-list .chat-item.me .chat-content {
@@ -61,6 +83,8 @@
       .chat-list .chat-item.me .chat-content .chat-audio-msg .audio-time {
         float: right;
         margin: .8rem .3rem 0 0; }
+      .chat-list .chat-item.me .chat-content .chat-material-msg {
+        float: right; }
 
 .chat-footer {
   height: 2.4rem;
@@ -129,10 +153,16 @@
 @media only screen and (-webkit-min-device-pixel-ratio: 3) {
   .text-input-section:before, .audio-input-section:before {
     -webkit-transform: scaleY(0.33);
+    transform: scaleY(0.33); }
+  .chat-list .chat-item .chat-content .chat-material-msg .material-line {
+    -webkit-transform: scaleY(0.33);
     transform: scaleY(0.33); } }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
   .text-input-section:before, .audio-input-section:before {
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5); }
+  .chat-list .chat-item .chat-content .chat-material-msg .material-line {
     -webkit-transform: scaleY(0.5);
     transform: scaleY(0.5); } }
 
@@ -159,3 +189,21 @@
 .material-list .list-block .list-group .item-content .item-after {
   font-size: .6rem;
   color: #9B9B9B; }
+
+.student-list .list-block {
+  margin: .75rem 0; }
+  .student-list .list-block .item-content .item-media img {
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%; }
+  .student-list .list-block .item-content .item-inner .item-after {
+    font-size: .6rem;
+    display: inline-block;
+    padding: .1rem .6rem;
+    border-radius: .5rem; }
+    .student-list .list-block .item-content .item-inner .item-after.replied {
+      color: #000;
+      background-color: #d9dadc; }
+    .student-list .list-block .item-content .item-inner .item-after.waiting {
+      color: #fff;
+      background-color: #4a90e2; }

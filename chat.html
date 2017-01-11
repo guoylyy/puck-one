@@ -8,26 +8,36 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 	
-	<link rel="stylesheet" href="//g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+	<!-- build:vendorCSS vendor.css -->
+	<link rel="stylesheet" type="text/css" href="./src/css/lib/sm.min.css">
+	<!-- endbuild -->
+
+	<!-- build:styleCSS style.css -->
 	<link rel="stylesheet" type="text/css" href="./src/css/reset.css">
 	<link rel="stylesheet" type="text/css" href="./src/css/icons.css">
 	<link rel="stylesheet" type="text/css" href="./src/css/chat.css">
+	<!-- endbuild -->
 </head>
 <body>
 	<div class="page-group">
-        <div class="page page-current" id="chat-list">
+		<div class="page page-current" id="loading-page">
+		</div>
+		<div class="page" id="student-page">
+			<header class="bar bar-nav">
+			    <h1 class="title">一对一学员</h1>
+			</header>
+			<div class="content infinite-scroll student-list">
+				<div class="list-block"></div>
+				<div class="infinite-scroll-preloader">
+              		<div class="preloader"></div>
+          		</div>
+			</div>
+		</div>
+        <div class="page" id="chat-page">
         	<header class="bar bar-nav">
-			    <a class="button button-link button-nav pull-left">
-			      	<span class="icon icon-left"></span>
-			    </a>
 			    <h1 class="title">笃师一对一</h1>
 			</header>
 			<div class="bar bar-footer chat-footer">
-				<div class="row">
-					<div class="col-33 chat-audio"><i class="icon-chat icon-chat-microphone"></i>语音</div>
-					<div class="col-33 chat-text"><i class="icon-chat icon-chat-keyboard"></i>文字</div>
-					<div class="col-33 chat-material"><i class="icon-chat icon-chat-menu"></i>素材</div>
-				</div>
 				<div class="text-input-section">
 					 <div class="searchbar row">
 					    <div class="search-input col-80">
@@ -40,11 +50,17 @@
 					
 			  	</div>
 			</div>
-			<div class="content chat-list"></div>
+			<div class="content pull-to-refresh-content">
+				<div class="pull-to-refresh-layer">
+			        <div class="preloader"></div>
+			        <div class="pull-to-refresh-arrow"></div>
+			    </div>
+			    <div class="chat-list"></div>
+			</div>
         </div>
-        <div class="page" id="material-list">
+        <div class="page" id="material-page">
         	<header class="bar bar-nav">
-			    <a class="button button-link button-nav pull-left" href="#chat-list">
+			    <a class="button button-link button-nav pull-left" href="#chat-page">
 			      	<span class="icon icon-left"></span>
 			    </a>
 			    <h1 class="title">笃师一对一</h1>
@@ -60,22 +76,6 @@
 					            	</div>
 					          	</div>
 							</li>
-							<li>
-					          	<div class="item-content">
-					            	<div class="item-inner">
-					              		<div class="item-title">关于R音如何发的规范</div>
-					            		<div class="item-after">李润南</div>
-					            	</div>
-					          	</div>
-					        </li>
-					        <li>
-					          	<div class="item-content">
-					            	<div class="item-inner">
-					              		<div class="item-title">关于R音如何发的规范</div>
-					            		<div class="item-after">李润南</div>
-					            	</div>
-					          	</div>
-					        </li>
 						</ul>
 					</div>
 				</div>
@@ -83,16 +83,15 @@
         </div>
     </div>
 
-	<script src="//g.alicdn.com/sj/lib/zepto/zepto.min.js"></script>
-	<script src="//g.alicdn.com/msui/sm/0.6.2/js/sm.min.js"></script>
-
-	<script src="./node_modules/leancloud-storage/dist/av.js"></script>
-	<script src="./node_modules/leancloud-realtime/dist/realtime.browser.js"></script>
-	<script src="./node_modules/leancloud-realtime-plugin-typed-messages/dist/typed-messages.js"></script>
-
+	<!-- build:vendorJS vendor.js -->
+	<script src="./node_modules/zepto/dist/zepto.min.js"></script>
+	<script src="./node_modules/zepto/src/callbacks.js"></script>
+	<script src="./node_modules/zepto/src/deferred.js"></script>
+	<script src="./src/js/lib/sm.min.js"></script>
 	<script src="./node_modules/mustache/mustache.js"></script>
-
 	<script src="./node_modules/seajs/dist/sea.js"></script>
+	<!-- endbuild -->
+
 	<script src="./src/js/seajs-config.js"></script>
 </body>
 </html>

@@ -7,38 +7,53 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
+	
+	<!-- build:vendorCSS vendor.css -->
+	<link rel="stylesheet" type="text/css" href="./src/css/lib/sm.min.css">
+	<!-- endbuild -->
+
+	<!-- build:styleCSS style.css -->
+	<link rel="stylesheet" type="text/css" href="./src/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="./src/css/icons.css">
+	<link rel="stylesheet" type="text/css" href="./src/css/chat.css">
+	<!-- endbuild -->
 </head>
 <body>
-	<script src="./node_modules/leancloud-storage/dist/av.js"></script>
-	<script src="./node_modules/leancloud-realtime/dist/realtime.browser.js"></script>
-	<script src="./node_modules/leancloud-realtime-plugin-typed-messages/dist/typed-messages.js"></script>
-	<script>
-		// 初始化存储 SDK
-		AV.init({
-		  	appId: 'XJroNb2m8eHOGobg6WKN16K6-gzGzoHsz', 
-		  	appKey:'rGGy6ziKb0uxnfrwp6T37gmK',
-		});
-		// 初始化实时通讯 SDK
-		var Realtime = AV.Realtime;
-		var realtime = new Realtime({
-		  	appId: 'XJroNb2m8eHOGobg6WKN16K6-gzGzoHsz',
-		  	region: 'cn',
-		  	plugins: [AV.TypedMessagesPlugin], // 注册富媒体消息插件
-		});
+	<div class="page-group">
+        <div class="page page-current" id="chat-page">
+        	<header class="bar bar-nav">
+			    <h1 class="title">笃师一对一</h1>
+			</header>
+			<div class="content chat-list"></div>
+			<div class="bar bar-footer chat-footer chat-text-active">
+				<div class="row">
+					<div class="col-33 chat-audio"><i class="icon-chat icon-chat-microphone"></i>语音</div>
+					<div class="col-33 chat-text"><i class="icon-chat icon-chat-keyboard"></i>文字</div>
+					<div class="col-33 chat-material"><i class="icon-chat icon-chat-menu"></i>素材</div>
+				</div>
+				<div class="text-input-section">
+					 <div class="searchbar row">
+					    <div class="search-input col-80">
+					      	<input type="search" id='search'/>
+					    </div>
+					    <a class="button button-fill button-primary col-20">发送</a>
+					 </div>
+			  	</div>
+			  	<div class="audio-input-section">
+					
+			  	</div>
+			</div>
+			<div class="content chat-list"></div>
+        </div>
+    </div>
 
-		/*
-			需要替换为实际进行对话的用户的唯一标识
-		 */
-		var clientID1 = 'Oliver', clientID2 = 'Mikey';
-		realtime.createIMClient(clientID2).then(function (currClient) {
-			return currClient.createConversation({
-				members: [clientID1],
-				name: clientID1 + '&' + clientID2,
-				unique: true
-			});
-		}).then(function (conversation) {
-			conversation.send(new AV.TextMessage('郭意亮同学, 你的问题如下,再去看看第三天的材料'));
-		}).catch(console.error);
-	</script>
+	<!-- build:vendorJS vendor.js -->
+	<script src="./node_modules/zepto/dist/zepto.min.js"></script>
+	<script src="./node_modules/zepto/src/callbacks.js"></script>
+	<script src="./node_modules/zepto/src/deferred.js"></script>
+	<script src="./src/js/lib/sm.min.js"></script>
+	<script src="./node_modules/mustache/mustache.js"></script>
+	<script src="./node_modules/seajs/dist/sea.js"></script>
+	<!-- endbuild -->
 </body>
 </html>
