@@ -61,6 +61,11 @@ define(function (require, exports, module) {
 				sPaginator = {
 					pageSize: 20,
 					pageNumber: 1
+				},
+				mLoading = false,
+				mPaginator = {
+					pageSize: 20,
+					pageNumber: 1
 				};
 
 			$(document).on('pageInit', '#student-page', function(e, pageId, $page) {
@@ -134,17 +139,84 @@ define(function (require, exports, module) {
 				}
 			});
 
-			$(document).on('pageInit', '#material-page', function (e, pageId, $page) {
-				self.ajaxMaterialList().done(function (data, status, xhr) {
+			$(document).on('refresh', '#chat-page .pull-to-refresh-content', function (e) {
+				var startDate = null;
+
+				if($('.chat-list .chat-item').length > 0) {
+					var firstChatItem = $('.chat-list .chat-item').first();
+					startDate = firstChatItem.data('date');
+				}
+
+				self.ajaxMessageList(null, startDate).done(function (data, status, xhr) {
 					if(data.code == 200) {
-						var dataArr = data.data.values;
-						$.each(dataArr, function (index, item) {
-							var html = Mustache.render(self.materialContentTpl, {item: item});
-						  	$('#material-page ul').append(html);
-						});
+						var dataArr = data.data.replies;
+						for(var i = dataArr.length - 1; i >= 0; i--) {
+							self.addMessageHtml(dataArr[i], 'prepend');
+						}
+						$.pullToRefreshDone('#chat-page .pull-to-refresh-content');
 					} else {
 						$.toast('获取数据失败');
 					}
+				});
+			});
+
+			$(document).on('pageInit', '#material-page', function (e, pageId, $page) {
+				self.ajaxMaterialList().done(function (data, status, xhr) {
+					if(data.code == 200) {
+						var dataArr = data.data.values,
+							mPaginator = data.data.paginator;
+
+						$('#material-page .list-block ul').empty().append([
+							'<li class="list-title">',
+								'<div class="item-content">',
+					            	'<div class="item-inner">',
+					              		'<div class="item-title">请选择素材发送</div>',
+					            	'</div>',
+					          	'</div>',
+							'</li>'
+						].join(''));
+
+						$.each(dataArr, function (index, item) {
+							var html = Mustache.render(self.materialContentTpl, {item: item});
+						  	$('#material-page .list-block ul').append(html);
+						});
+
+						if(mPaginator.pageNumber >= mPaginator.totalPageNum) {
+							$.detachInfiniteScroll($('.material-list.infinite-scroll'));
+                  			$('.material-list .infinite-scroll-preloader').remove();
+						}
+					} else {
+						$.toast('获取数据失败');
+					}
+				});
+			});
+
+			$(document).on('infinite', '.material-list', function () {
+				if(mLoading) return;
+				if(mPaginator.pageNumber >= mPaginator.totalPageNum) return;
+
+				mLoading = true;
+				mPaginator.pageNumber++;
+
+				self.ajaxMaterialList(mPaginator.pageNumber, mPaginator.pageSize).done(function (data, status, xhr) {
+					if(data.code == 200) {
+						var dataArr = data.data.values, 
+							mPaginator = data.data.paginator;
+
+						$.each(dataArr, function (index, item) {
+						  	var html = Mustache.render(self.materialContentTpl, {item: item});
+						  	$('#material-page .list-block ul').append(html);
+						});
+
+						if(mPaginator.pageNumber >= mPaginator.totalPageNum) {
+							$.detachInfiniteScroll($('.material-list.infinite-scroll'));
+                  			$('.material-list .infinite-scroll-preloader').remove();
+						}
+					} else {
+						$.toast('获取数据失败');
+					}
+					mLoading = false;
+					$.refreshScroller();
 				});
 			});
 		},
@@ -294,8 +366,12 @@ define(function (require, exports, module) {
 				dataType: 'json'
 			});
 		},
-		ajaxMessageList: function () {
+		ajaxMessageList: function (pageSize, startDate) {
+			var pSize = pageSize || 10, sDate = startDate || null;
+
 			var url = this.isTeacher ? (BASE_URL + '/weh5/course/' + this.clazzId + '/feedback/' + this.studentId) : (BASE_URL + '/weh5/course/' + this.clazzId + '/feedback');
+
+			url += '?pageSize=' + pSize + (sDate ? ('&startDate=' + startDate) : '');
 
 			return $.ajax({
 				type: 'GET',
@@ -303,10 +379,12 @@ define(function (require, exports, module) {
 				dataType: 'json'
 			});
 		},
-		ajaxMaterialList: function () {
+		ajaxMaterialList: function (pageNumber, pageSize) {
+			var pNum = pageNumber || 1, pSize = pageSize || 20;
+
 			return $.ajax({
 				type: 'GET',
-				url: BASE_URL + '/weh5/course/' + this.clazzId + '/feedback/materials',
+				url: BASE_URL + '/weh5/course/' + this.clazzId + '/feedback/materials?pageNumber=' + pNum + '&pageSize=' + pSize,
 				dataType: 'json'
 			});
 		},
@@ -320,18 +398,19 @@ define(function (require, exports, module) {
 				dataType: 'json'
 			});
 		},
-		addMessageHtml: function (item) {
-			var self = this, $list = $('#chat-page .chat-list');
+		addMessageHtml: function (item, direction) {
+			var self = this, $list = $('#chat-page .chat-list'), dir = direction || 'append';
 
 			switch(item.type) {
 				case 'TEXT':
-					$list.append(Mustache.render(self.textMsgTpl, {item: item}));
+					item.date = item.date.slice(0, 10) + ' ' + item.date.slice(11, 19);
+					$list[dir](Mustache.render(self.textMsgTpl, {item: item}));
 				break;
 				case 'MATERIAL':
-					$list.append(Mustache.render(self.materialMsgTpl, {item: item}));
+					item.date = item.date.slice(0, 10) + ' ' + item.date.slice(11, 19);
+					$list[dir](Mustache.render(self.materialMsgTpl, {item: item}));
 				break;
 			}
-			$list.scrollTop($list.get(0).scrollHeight);
 		},
 		studentFeedbackTpl: [
 			'<li>',
@@ -357,7 +436,7 @@ define(function (require, exports, module) {
 	        '</li>'
 		].join(''),
 		textMsgTpl: [
-			'<div class="chat-item {{#item.userInfo.isSelf}}me{{/item.userInfo.isSelf}}">',
+			'<div class="chat-item {{#item.userInfo.isSelf}}me{{/item.userInfo.isSelf}}" data-date="{{item.date}}">',
 				'<div class="chat-avatar">',
 					'<img src="{{item.userInfo.headimgurl}}">',
 				'</div>',
@@ -378,7 +457,7 @@ define(function (require, exports, module) {
 
 		].join(''),
 		materialMsgTpl: [
-			'<div class="chat-item {{#item.userInfo.isSelf}}me{{/item.userInfo.isSelf}}">',
+			'<div class="chat-item {{#item.userInfo.isSelf}}me{{/item.userInfo.isSelf}}" data-date="{{item.date}}">',
 				'<div class="chat-avatar">',
 					'<img src="{{item.userInfo.headimgurl}}">',
 				'</div>',
