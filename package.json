@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "framework7": "^1.5.2",
+    "howler": "^2.0.2",
     "leancloud-realtime": "^3.3.3",
     "leancloud-realtime-plugin-typed-messages": "^1.0.0",
     "leancloud-storage": "^1.5.3",

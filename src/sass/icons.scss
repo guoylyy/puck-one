@@ -27,3 +27,11 @@
 .active .icon-chat-menu {
 	@include sprite($menu-active, inline-block);
 }
+
+.icon-chat-play {
+	@include sprite($play, inline-block);
+}
+
+.icon-chat-pause {
+	@include sprite($pause, inline-block);
+}

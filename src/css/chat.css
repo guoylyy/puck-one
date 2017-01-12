@@ -31,7 +31,8 @@
         background-color: #fff;
         border-radius: .2rem;
         margin-top: .1rem;
-        padding: .4rem .5rem; }
+        padding: .4rem .5rem;
+        box-shadow: 0 1px 1px 0 #d9dadc; }
         .chat-list .chat-item .chat-content .chat-text-msg p {
           font-size: .7rem;
           margin: 0; }
@@ -43,7 +44,9 @@
           border-radius: .2rem;
           margin-top: .1rem;
           height: 1.7rem;
-          width: 8rem; }
+          width: 6rem;
+          padding: .15rem .3rem;
+          box-shadow: 0 1px 1px 0 #d9dadc; }
         .chat-list .chat-item .chat-content .chat-audio-msg .audio-time {
           float: left;
           font-size: .7rem;
@@ -56,7 +59,8 @@
         background-color: #fff;
         border-radius: .2rem;
         margin-top: .1rem;
-        padding: 0 .5rem; }
+        padding: 0 .5rem;
+        box-shadow: 0 1px 1px 0 #d9dadc; }
         .chat-list .chat-item .chat-content .chat-material-msg .material-title {
           line-height: 2.2rem;
           text-overflow: ellipsis;
@@ -127,13 +131,30 @@
         margin-left: 3%;
         margin-right: 3%; }
   .chat-footer.chat-audio-active {
-    height: 7rem; }
+    height: 8rem; }
     .chat-footer.chat-audio-active .audio-input-section {
       position: relative;
       display: block;
       background-color: #f6f6f6;
       margin: 0 -.5rem;
-      height: 4.6rem; }
+      padding-top: .8rem;
+      height: 5.6rem; }
+      .chat-footer.chat-audio-active .audio-input-section .record-btn {
+        width: 2.6rem;
+        height: 2.6rem;
+        margin: 0 auto;
+        background-color: #fff;
+        border-radius: 50%;
+        padding: .3rem;
+        box-shadow: 0 1px 1px 0 #d9dadc;
+        user-select: none; }
+        .chat-footer.chat-audio-active .audio-input-section .record-btn.active {
+          background-color: #e64340; }
+      .chat-footer.chat-audio-active .audio-input-section .record-tip {
+        font-size: .5rem;
+        line-height: 2rem;
+        color: #9b9b9b;
+        text-align: center; }
   .chat-footer .text-input-section, .chat-footer .audio-input-section {
     display: none; }
 
@@ -173,6 +194,9 @@
 
 .chat-footer.chat-text-active ~ .content {
   bottom: 4.8rem; }
+
+.chat-footer.chat-audio-active ~ .content {
+  bottom: 8rem; }
 
 .material-list .list-block {
   margin: .75rem 0; }

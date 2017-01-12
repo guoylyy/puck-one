@@ -2,28 +2,26 @@ define(function (require, exports, module) {
 	var BASE_URL = 'http://stg-gambition.leanapp.cn';
 
 	// 这里需要动态获取当前微信用户的信息
-	
-		var mobilePhoneNumber = 'oHPV5v_kuprY5R3NeX6hVyhgKmkE',
-		password = '$2a$13$zol0k.bzDgefSGhQpBX/VOk.zlxuUJ3B1WNr81EW0p52CwqbUGRNa';
-	
-
-	/*
-		var mobilePhoneNumber = 'oHPV5v57NNFlk0Krwxpft5WRDk9o',
-		password = '$2a$13$x6nassMYeM6xHeXyzovBR.RMOSALOxHhwq09YYTXzpe0WF/oG9k1i';
-	*/
-
 	var chatApp = {
+		//mobilePhoneNumber: 'oHPV5v57NNFlk0Krwxpft5WRDk9o',
+		//password: '$2a$13$x6nassMYeM6xHeXyzovBR.RMOSALOxHhwq09YYTXzpe0WF/oG9k1i',
+
+		mobilePhoneNumber: 'oHPV5v_kuprY5R3NeX6hVyhgKmkE',
+		password: '$2a$13$zol0k.bzDgefSGhQpBX/VOk.zlxuUJ3B1WNr81EW0p52CwqbUGRNa',
+
 		loginUser: null,
 		isTeacher: false,
 		clazzId: null,
 		studentId: null,
 		hasInitChatPage: false,
+		hasInitWeixinSDK: false,
 
 		initialize: function () {
 			this.parseClazzId();
 			this.initAjax();
 			this.initPage();
 			this.initLogin();
+			this.initWeixinSDK();
 		},
 		parseClazzId: function () {
 			var pathname = window.location.pathname,
@@ -258,6 +256,42 @@ define(function (require, exports, module) {
 
 			self.bindEvents();
 		},
+		initWeixinSDK: function () {
+			var self = this;
+
+			self.ajaxWeixinSDK().done(function (data, status, xhr) {
+				if(data.code == 200) {
+					var params = $.extend(data.data, {
+						//debug: true,
+						jsApiList: [
+							'startRecord',
+							'stopRecord',
+							'onVoiceRecordEnd',
+							'playVoice',
+							'pauseVoice',
+							'stopVoice',
+							'onVoicePlayEnd',
+							'uploadVoice',
+							'downloadVoice'
+						]
+					});
+					delete params.jsapi_ticket;
+					delete params.url;
+					wx.config(params);
+
+					wx.ready(function () {
+						self.hasInitWeixinSDK = true;
+						self.bindVoiceRecordEvents();
+					});
+					wx.error(function (res) {
+						self.hasInitWeixinSDK = false;
+						$.toast('微信鉴权失败');
+					});
+				} else {
+					$.toast('获取数据失败');
+				}
+			});
+		},
 		bindEvents: function () {
 			var self = this;
 
@@ -265,10 +299,88 @@ define(function (require, exports, module) {
 
 			$('.text-input-section .button').on('click', $.proxy(self.onClickSendTextBtn, self));
 
+			$('.chat-list').on('click', '.chat-audio-msg i', self.onClickVoiceItem);
+
 			if(self.isTeacher) {
 				$('.student-list .list-block').on('click', '.item-link', $.proxy(self.onClickStudentItem, self));
 				$('.material-list .list-block').on('click', 'li', $.proxy(self.onClickMaterialItem, self));
 			}
+		},
+		bindVoiceRecordEvents: function () {
+			var self = this, 
+				$recordBtn = $('.audio-input-section .record-btn'),
+				startTime = 0, endTime = 0, recordTimer;
+
+			if(!localStorage.allowRecord || localStorage.allowRecord !== 'true'){
+			    wx.startRecord({
+			        success: function(){
+			            localStorage.allowRecord = 'true';
+			            wx.stopRecord();
+			        },
+			        cancel: function () {
+			            alert('用户拒绝授权录音');
+			        }
+			    });
+			}
+
+			$('.audio-input-section .record-btn').on('touchstart', function (event) {
+				event.preventDefault();
+
+				if(!self.hasInitWeixinSDK) return;
+
+				startTime = new Date().getTime();
+
+				recordTimer = setTimeout(function () {
+					wx.startRecord({
+						success: function (res) {
+							localStorage.allowRecord = 'true';
+							$recordBtn.addClass('active');
+						},
+						cancel: function () {
+							$.toast('用户拒绝授权录音');
+						}
+					});
+				}, 300);
+			});
+
+			$('.audio-input-section .record-btn').on('touchend', function () {
+				event.preventDefault();
+
+				if(!self.hasInitWeixinSDK) return;
+
+				endTime = new Date().getTime();
+
+				if((endTime - startTime) < 300) {
+					startTime = endTime = 0;
+					clearTimeout(recordTimer);
+				} else {
+					wx.stopRecord({
+						success: function (res) {
+							$recordBtn.removeClass('active');
+							wx.uploadVoice({
+							    localId: res.localId,
+							    isShowProgressTips: 1,
+						        success: function (res) {
+							    	self.ajaxSendMessage({
+										replyType: 'VOICE',
+										mediaId: res.serverId
+									})
+									.done(function (data, status, xhr) {
+										if(data.code == 200) {
+											self.addMessageHtml(data.data);
+										} else {
+											$.toast('发送数据失败');
+										}
+									});
+							    },
+							    fail: function () {
+							    	$.toast('上传语音失败');
+							    }
+							});
+						}
+					});
+				}
+			});
 		},
 		onClickChatOption: function (event) {
 			var target = event.currentTarget, 
@@ -347,13 +459,33 @@ define(function (require, exports, module) {
 				}
 			});
 		},
+		onClickVoiceItem: function (event) {
+			var target = event.currentTarget, 
+				$bar = $(target).closest('.audio-bar'),
+				url = $bar.data('url');
+
+			if($(target).hasClass('icon-chat-play')) {
+				var sound = new Howl({
+				  	src: [url]
+				});
+
+				sound.once('load', function(){
+				  	$(target).addClass('icon-chat-pause').removeClass('icon-chat-play');
+					sound.play();
+				});
+
+				sound.on('end', function(){
+				  	$(target).addClass('icon-chat-play').removeClass('icon-chat-pause');
+				});
+			}
+		},
 		ajaxLogin: function () {
 			return $.ajax({
 				type: 'POST',
 				url: BASE_URL + '/api/mng/auth',
 				data: {
-					mobilePhoneNumber: mobilePhoneNumber,
-					password: password
+					mobilePhoneNumber: this.mobilePhoneNumber,
+					password: this.password
 				},
 				dataType: 'json'
 			});
@@ -361,7 +493,7 @@ define(function (require, exports, module) {
 		ajaxCheckTeacher: function () {
 			return $.ajax({
 				type: 'GET',
-				url: BASE_URL + '/weh5/course/' + this.clazzId + '/isTeacher',
+				url: BASE_URL + '/api/course/' + this.clazzId + '/isTeacher',
 				dataType: 'json'
 			});
 		},
@@ -370,14 +502,14 @@ define(function (require, exports, module) {
 
 			return $.ajax({
 				type: 'GET',
-				url: BASE_URL + '/weh5/course/' + this.clazzId + '/feedbacks?pageNumber=' + pNum + '&pageSize=' + pSize,
+				url: BASE_URL + '/api/course/' + this.clazzId + '/feedbacks?pageNumber=' + pNum + '&pageSize=' + pSize,
 				dataType: 'json'
 			});
 		},
 		ajaxMessageList: function (pageSize, startDate) {
-			var pSize = pageSize || 10, sDate = startDate || null;
+			var pSize = pageSize || 5, sDate = startDate || null;
 
-			var url = this.isTeacher ? (BASE_URL + '/weh5/course/' + this.clazzId + '/feedback/' + this.studentId) : (BASE_URL + '/weh5/course/' + this.clazzId + '/feedback');
+			var url = this.isTeacher ? (BASE_URL + '/api/course/' + this.clazzId + '/feedback/' + this.studentId) : (BASE_URL + '/weh5/course/' + this.clazzId + '/feedback');
 
 			url += '?pageSize=' + pSize + (sDate ? ('&startDate=' + startDate) : '');
 
@@ -392,17 +524,24 @@ define(function (require, exports, module) {
 
 			return $.ajax({
 				type: 'GET',
-				url: BASE_URL + '/weh5/course/' + this.clazzId + '/feedback/materials?pageNumber=' + pNum + '&pageSize=' + pSize,
+				url: BASE_URL + '/api/course/' + this.clazzId + '/feedback/materials?pageNumber=' + pNum + '&pageSize=' + pSize,
 				dataType: 'json'
 			});
 		},
 		ajaxSendMessage: function (data) {
-			var url = this.isTeacher ? (BASE_URL + '/weh5/course/' + this.clazzId + '/feedback/' + this.studentId) : (BASE_URL + '/weh5/course/' + this.clazzId + '/feedback');
+			var url = this.isTeacher ? (BASE_URL + '/api/course/' + this.clazzId + '/feedback/' + this.studentId) : (BASE_URL + '/weh5/course/' + this.clazzId + '/feedback');
 
 			return $.ajax({
 				type: 'POST',
 				url: url,
 				data: data,
+				dataType: 'json'
+			});
+		},
+		ajaxWeixinSDK: function () {
+			return $.ajax({
+				type: 'GET',
+				url: BASE_URL + '/api/wechat/jsSdkAuth?url=' + window.location.pathname,
 				dataType: 'json'
 			});
 		},
@@ -417,6 +556,9 @@ define(function (require, exports, module) {
 			switch(item.type) {
 				case 'TEXT':
 					$list[dir](Mustache.render(self.textMsgTpl, {item: item}));
+				break;
+				case 'VOICE':
+					$list[dir](Mustache.render(self.audioMsgTpl, {item: item}));
 				break;
 				case 'MATERIAL':
 					$list[dir](Mustache.render(self.materialMsgTpl, {item: item}));
@@ -470,7 +612,23 @@ define(function (require, exports, module) {
 			'</div>'
 		].join(''),
 		audioMsgTpl: [
-
+			'<div class="chat-item {{#item.userInfo.isSelf}}me{{/item.userInfo.isSelf}}" data-date="{{item.date}}">',
+				'<div class="chat-avatar">',
+					'<img src="{{item.userInfo.headimgurl}}">',
+				'</div>',
+				'<div class="chat-content">',
+					'<div class="chat-user">',
+						'{{#item.userInfo.isTeacher}}',
+						'<span class="chat-user-name">{{item.userInfo.name}}</span>',
+						'<span class="chat-user-title">笃师</span>',
+						'{{/item.userInfo.isTeacher}}',
+					'</div>',
+					'<div class="chat-audio-msg">',
+						'<div class="audio-bar" data-url="{{item.url}}"><i class="icon-chat icon-chat-play"></i></div>',
+						'<div class="audio-time"></div>',
+					'</div>',
+				'</div>',
+			'</div>'
 		].join(''),
 		materialMsgTpl: [
 			'<div class="chat-item {{#item.userInfo.isSelf}}me{{/item.userInfo.isSelf}}" data-date="{{item.date}}">',

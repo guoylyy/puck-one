@@ -8,11 +8,11 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 	
-	<!-- build:vendorCSS vendor.css -->
+	<!-- build:vendorCSS /vendor.css -->
 	<link rel="stylesheet" type="text/css" href="/src/css/lib/sm.min.css">
 	<!-- endbuild -->
 
-	<!-- build:styleCSS style.css -->
+	<!-- build:styleCSS /style.css -->
 	<link rel="stylesheet" type="text/css" href="/src/css/reset.css">
 	<link rel="stylesheet" type="text/css" href="/src/css/icons.css">
 	<link rel="stylesheet" type="text/css" href="/src/css/chat.css">
@@ -47,7 +47,8 @@
 					 </div>
 			  	</div>
 			  	<div class="audio-input-section">
-					
+					<div class="record-btn"></div>
+					<div class="record-tip">按住开始录音</div>
 			  	</div>
 			</div>
 			<div class="content pull-to-refresh-content">
@@ -86,12 +87,15 @@
         </div>
     </div>
 
-	<!-- build:vendorJS vendor.js -->
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+	<!-- build:vendorJS /vendor.js -->
 	<script src="/node_modules/zepto/dist/zepto.min.js"></script>
 	<script src="/node_modules/zepto/src/callbacks.js"></script>
 	<script src="/node_modules/zepto/src/deferred.js"></script>
 	<script src="/src/js/lib/sm.min.js"></script>
 	<script src="/node_modules/mustache/mustache.js"></script>
+	<script src="/node_modules/howler/dist/howler.min.js"></script>
 	<script src="/node_modules/seajs/dist/sea.js"></script>
 	<!-- endbuild -->
 

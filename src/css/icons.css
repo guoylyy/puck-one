@@ -4,13 +4,13 @@
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .icon-chat {
     background-image: url("../img/icons@2x.png");
-    background-size: 23px 108px; } }
+    background-size: 23px 147px; } }
 
 .icon-chat {
   vertical-align: middle; }
 
 .icon-chat-microphone {
-  background-position: 0px -88px;
+  background-position: 0px -126px;
   background-repeat: no-repeat;
   overflow: hidden;
   display: inline-block;
@@ -18,7 +18,7 @@
   height: 21px; }
 
 .active .icon-chat-microphone {
-  background-position: 0px -67px;
+  background-position: 0px -106px;
   background-repeat: no-repeat;
   overflow: hidden;
   display: inline-block;
@@ -56,3 +56,19 @@
   display: inline-block;
   width: 23px;
   height: 16px; }
+
+.icon-chat-play {
+  background-position: 0px -86px;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  display: inline-block;
+  width: 15px;
+  height: 20px; }
+
+.icon-chat-pause {
+  background-position: 0px -67px;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  display: inline-block;
+  width: 15px;
+  height: 19px; }

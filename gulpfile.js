@@ -51,13 +51,14 @@ gulp.task('sprite:icon', function () {
 gulp.task('browser-sync-dev', function() {
     browserSync.init({
         server: {
-            baseDir: './',
-            middleware: function (req, res, next) {
-                if(/\/theOne\/\w+/.test(req.url)) {
-                    req.url = '/chat.html';
-                }
-                return next();
+            baseDir: './'
+        },
+        port: 80,
+        middleware: function (req, res, next) {
+            if(/\/theOne\/\w+/.test(req.url)) {
+                req.url = '/chat.html';
             }
+            return next();
         }
     });
 
