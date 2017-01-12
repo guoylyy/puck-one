@@ -51,7 +51,13 @@ gulp.task('sprite:icon', function () {
 gulp.task('browser-sync-dev', function() {
     browserSync.init({
         server: {
-            baseDir: "./"
+            baseDir: './',
+            middleware: function (req, res, next) {
+                if(/\/theOne\/\w+/.test(req.url)) {
+                    req.url = '/chat.html';
+                }
+                return next();
+            }
         }
     });
 
@@ -61,7 +67,13 @@ gulp.task('browser-sync-dev', function() {
 gulp.task('browser-sync-online', function() {
     browserSync.init({
         server: {
-            baseDir: "./dist"
+            baseDir: './dist',
+            middleware: function (req, res, next) {
+                if(/\/theOne\/\w+/.test(req.url)) {
+                    req.url = '/chat.html';
+                }
+                return next();
+            }
         }
     });
 });

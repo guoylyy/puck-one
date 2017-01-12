@@ -15,14 +15,20 @@ define(function (require, exports, module) {
 	var chatApp = {
 		loginUser: null,
 		isTeacher: false,
-		clazzId: '584bbb8f2f301e005724eb38',
+		clazzId: null,
 		studentId: null,
 		hasInitChatPage: false,
 
 		initialize: function () {
+			this.parseClazzId();
 			this.initAjax();
 			this.initPage();
 			this.initLogin();
+		},
+		parseClazzId: function () {
+			var pathname = window.location.pathname,
+				index = pathname.lastIndexOf('/');
+			this.clazzId = pathname.slice(index + 1);
 		},
 		initAjax: function () {
 			$(document).on('ajaxSend', function () {
@@ -140,14 +146,14 @@ define(function (require, exports, module) {
 			});
 
 			$(document).on('refresh', '#chat-page .pull-to-refresh-content', function (e) {
-				var startDate = null;
+				var startDate = null, pageSize = 5;
 
 				if($('.chat-list .chat-item').length > 0) {
 					var firstChatItem = $('.chat-list .chat-item').first();
 					startDate = firstChatItem.data('date');
 				}
 
-				self.ajaxMessageList(null, startDate).done(function (data, status, xhr) {
+				self.ajaxMessageList(pageSize, startDate).done(function (data, status, xhr) {
 					if(data.code == 200) {
 						var dataArr = data.data.replies;
 						for(var i = dataArr.length - 1; i >= 0; i--) {
@@ -309,8 +315,10 @@ define(function (require, exports, module) {
 			})
 			.done(function (data, status, xhr) {
 				if(data.code == 200) {
-					self.addMessageHtml(data.data);
 					$.router.load('#chat-page');
+					setTimeout(function () {
+						self.addMessageHtml(data.data);
+					}, 200);
 				} else {
 					$.toast('发送数据失败');
 				}
@@ -415,8 +423,10 @@ define(function (require, exports, module) {
 				break;
 			}
 
-		 	$content.scroller('refresh');
-			$content.scrollTop($content[0].scrollHeight);
+			$content.scroller('refresh');
+			if(dir == 'append') {
+				$content.scrollTop($content[0].scrollHeight);
+			}
 		},
 		studentFeedbackTpl: [
 			'<li>',

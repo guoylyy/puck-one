@@ -2,4 +2,4 @@ seajs.config({
 	base: '.'
 });
 
-seajs.use(['./src/js/chat']);
+seajs.use(['/src/js/chat']);
