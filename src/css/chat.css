@@ -16,13 +16,15 @@
       float: left;
       width: 12rem;
       padding-left: .5rem; }
-      .chat-list .chat-item .chat-content .chat-user .chat-user-name {
-        font-size: .7rem;
-        color: #333234; }
-      .chat-list .chat-item .chat-content .chat-user .chat-user-title {
-        font-size: .5rem;
-        color: #9b9b9b;
-        margin-left: .2rem; }
+      .chat-list .chat-item .chat-content .chat-user {
+        min-height: .5rem; }
+        .chat-list .chat-item .chat-content .chat-user .chat-user-name {
+          font-size: .7rem;
+          color: #333234; }
+        .chat-list .chat-item .chat-content .chat-user .chat-user-title {
+          font-size: .5rem;
+          color: #9b9b9b;
+          margin-left: .2rem; }
       .chat-list .chat-item .chat-content .chat-text-msg {
         float: left;
         max-width: 12rem;

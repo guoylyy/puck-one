@@ -10,7 +10,7 @@ define(function (require, exports, module) {
 	/*
 		var mobilePhoneNumber = 'oHPV5v57NNFlk0Krwxpft5WRDk9o',
 		password = '$2a$13$x6nassMYeM6xHeXyzovBR.RMOSALOxHhwq09YYTXzpe0WF/oG9k1i';
-	*/	
+	*/
 
 	var chatApp = {
 		loginUser: null,
@@ -399,18 +399,24 @@ define(function (require, exports, module) {
 			});
 		},
 		addMessageHtml: function (item, direction) {
-			var self = this, $list = $('#chat-page .chat-list'), dir = direction || 'append';
+			var self = this, 
+				$content = $('#chat-page .content'),
+				$list = $('#chat-page .chat-list'), 
+				dir = direction || 'append';
+
+			item.date = item.date.slice(0, 10) + ' ' + item.date.slice(11, 19);
 
 			switch(item.type) {
 				case 'TEXT':
-					item.date = item.date.slice(0, 10) + ' ' + item.date.slice(11, 19);
 					$list[dir](Mustache.render(self.textMsgTpl, {item: item}));
 				break;
 				case 'MATERIAL':
-					item.date = item.date.slice(0, 10) + ' ' + item.date.slice(11, 19);
 					$list[dir](Mustache.render(self.materialMsgTpl, {item: item}));
 				break;
 			}
+
+		 	$content.scroller('refresh');
+			$content.scrollTop($content[0].scrollHeight);
 		},
 		studentFeedbackTpl: [
 			'<li>',

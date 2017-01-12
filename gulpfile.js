@@ -78,7 +78,7 @@ gulp.task('usemin', function () {
             styleCSS: [minifyCss(), rev()],
             vendorJS: [uglify(), rev()]
         }))
-        .pipe(gulp.dest('dist'))
+        .pipe(gulp.dest('dist'));
 });
 
 gulp.task('copy-rev-img', function () {
