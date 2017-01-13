@@ -35,7 +35,8 @@
         box-shadow: 0 1px 1px 0 #d9dadc; }
         .chat-list .chat-item .chat-content .chat-text-msg p {
           font-size: .7rem;
-          margin: 0; }
+          margin: 0;
+          word-break: break-all; }
       .chat-list .chat-item .chat-content .chat-audio-msg {
         overflow: auto; }
         .chat-list .chat-item .chat-content .chat-audio-msg .audio-bar {
@@ -60,7 +61,8 @@
         border-radius: .2rem;
         margin-top: .1rem;
         padding: 0 .5rem;
-        box-shadow: 0 1px 1px 0 #d9dadc; }
+        box-shadow: 0 1px 1px 0 #d9dadc;
+        color: #333234; }
         .chat-list .chat-item .chat-content .chat-material-msg .material-title {
           line-height: 2.2rem;
           text-overflow: ellipsis;
@@ -137,24 +139,59 @@
       display: block;
       background-color: #f6f6f6;
       margin: 0 -.5rem;
-      padding-top: .8rem;
-      height: 5.6rem; }
+      height: 5.6rem;
+      padding-top: .1rem; }
+      .chat-footer.chat-audio-active .audio-input-section .record-tip {
+        font-size: .5rem;
+        line-height: 1.3rem;
+        color: #9b9b9b;
+        height: 1.3rem; }
       .chat-footer.chat-audio-active .audio-input-section .record-btn {
-        width: 2.6rem;
-        height: 2.6rem;
+        width: 2.3rem;
+        height: 2.3rem;
         margin: 0 auto;
-        background-color: #fff;
+        background-color: #df4048;
         border-radius: 50%;
         padding: .3rem;
         box-shadow: 0 1px 1px 0 #d9dadc;
-        user-select: none; }
-        .chat-footer.chat-audio-active .audio-input-section .record-btn.active {
-          background-color: #e64340; }
-      .chat-footer.chat-audio-active .audio-input-section .record-tip {
+        user-select: none;
+        line-height: 1.6rem; }
+        .chat-footer.chat-audio-active .audio-input-section .record-btn .icon-chat {
+          margin-right: 0; }
+        .chat-footer.chat-audio-active .audio-input-section .record-btn.start .icon-chat-send-l,
+        .chat-footer.chat-audio-active .audio-input-section .record-btn.start .icon-chat-pause-l {
+          display: none; }
+        .chat-footer.chat-audio-active .audio-input-section .record-btn.record .icon-chat-pause-l {
+          display: inline-block; }
+        .chat-footer.chat-audio-active .audio-input-section .record-btn.record .icon-chat-send-l {
+          display: none; }
+        .chat-footer.chat-audio-active .audio-input-section .record-btn.send .icon-chat-pause-l {
+          display: none; }
+        .chat-footer.chat-audio-active .audio-input-section .record-btn.send .icon-chat-send-l {
+          display: inline-block; }
+      .chat-footer.chat-audio-active .audio-input-section .record-status {
         font-size: .5rem;
-        line-height: 2rem;
+        line-height: 1.5rem;
         color: #9b9b9b;
         text-align: center; }
+      .chat-footer.chat-audio-active .audio-input-section .cancel-btn {
+        display: none;
+        position: absolute;
+        top: .8rem;
+        right: .8rem;
+        width: 2.5rem;
+        height: 1.5rem;
+        background-color: #fff;
+        box-shadow: 0 1px 1px 0 #d9dadc;
+        border-radius: .2rem;
+        font-size: .5rem;
+        line-height: 1.5rem; }
+      .chat-footer.chat-audio-active .audio-input-section.active .record-btn {
+        background-color: #4a90e2; }
+      .chat-footer.chat-audio-active .audio-input-section.active .record-status {
+        color: #333234; }
+      .chat-footer.chat-audio-active .audio-input-section.active .cancel-btn {
+        display: block; }
   .chat-footer .text-input-section, .chat-footer .audio-input-section {
     display: none; }
 

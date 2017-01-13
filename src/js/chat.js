@@ -145,6 +145,10 @@ define(function (require, exports, module) {
 				}
 			});
 
+			$(document).on('beforePageSwitch', '#chat-page', function () {
+				self.resetChatPageHtml();
+			});
+
 			$(document).on('refresh', '#chat-page .pull-to-refresh-content', function (e) {
 				var startDate = null, pageSize = 5;
 
@@ -258,6 +262,16 @@ define(function (require, exports, module) {
 
 			self.bindEvents();
 		},
+		resetChatPageHtml: function () {
+			var $list = $('#chat-page .chat-list'), $footer = $('#chat-page .chat-footer');
+
+			$list.empty();
+			$footer.removeClass('chat-text-active chat-audio-active chat-material-active');
+			$footer.find('.chat-audio, .chat-text, .chat-material').removeClass('active');
+
+			$footer.find('.text-input-section input').val('');
+			$footer.find('.audio-input-section').removeClass('active');
+		},
 		initWeixinSDK: function () {
 			var self = this;
 
@@ -315,9 +329,13 @@ define(function (require, exports, module) {
 			});
 		},
 		bindVoiceRecordEvents: function () {
-			var self = this, 
+			var self = this,
+				$audioInputSection = $('.audio-input-section'),
+				$recordTip = $('.audio-input-section .record-tip'),
+				$recordStatus = $('.audio-input-section .record-status'),
 				$recordBtn = $('.audio-input-section .record-btn'),
-				startTime = 0, endTime = 0, recordTimer;
+				$cancelBtn = $('.audio-input-section .cancel-btn'),
+				localId, recordTimer;
 
 			if(!localStorage.allowRecord || localStorage.allowRecord !== 'true'){
 			    wx.startRecord({
@@ -331,62 +349,91 @@ define(function (require, exports, module) {
 			    });
 			}
 
-			$('.audio-input-section .record-btn').on('touchstart', function (event) {
-				event.preventDefault();
+			var resetRecord = function (status) {
+				$audioInputSection.removeClass('active');
+				$recordBtn.removeClass(status).addClass('start');
+				$recordTip.text('');
+				$recordStatus.text('点击开始录音');
+			};
 
-				if(!self.hasInitWeixinSDK) return;
+			var stopRecord = function () {
+				wx.stopRecord({
+					success: function (res) {
+						localId = res.localId;
 
-				startTime = new Date().getTime();
+						recordTimer && clearTimeout(recordTimer);
 
-				recordTimer = setTimeout(function () {
+						$recordBtn.removeClass('record').addClass('send');
+						$recordStatus.text('点击发送');
+					},
+					fail: function () {
+						$.toast('结束录音失败');
+						resetRecord('record');
+					}
+				});
+			};
+
+			$recordBtn.on('click', function (event) {
+				if(!self.hasInitWeixinSDK || (!localStorage.allowRecord || localStorage.allowRecord !== 'true')) return;
+
+				if($recordBtn.hasClass('start')) {
 					wx.startRecord({
 						success: function (res) {
-							localStorage.allowRecord = 'true';
-							$recordBtn.addClass('active');
+							$audioInputSection.addClass('active');
+
+							$recordBtn.removeClass('start').addClass('record');
+							$recordTip.text('满60s自动发送');
+							$recordStatus.text('录音中');
+
+							recordTimer = setTimeout(function () {
+								stopRecord();
+							}, 59000);
 						},
-						cancel: function () {
-							$.toast('用户拒绝授权录音');
+						fail: function () {
+							$.toast('开始录音失败');
 						}
 					});
-				}, 300);
+				} else if($recordBtn.hasClass('record')) {
+					stopRecord();
+				} else if($recordBtn.hasClass('send')) {
+					wx.uploadVoice({
+					    localId: localId,
+					    isShowProgressTips: 1,
+				        success: function (res) {
+					    	self.ajaxSendMessage({
+								replyType: 'VOICE',
+								mediaId: res.serverId
+							})
+							.done(function (data, status, xhr) {
+								if(data.code == 200) {
+									self.addMessageHtml(data.data);
+
+								} else {
+									$.toast('发送语音失败');
+								}
+
+								resetRecord('send');
+							})
+							.fail(function () {
+								$.toast('发送语音失败');
+								resetRecord('send');
+							});
+					    },
+					    fail: function () {
+					    	$.toast('上传语音失败');
+					    	resetRecord('send');
+					    }
+					});
+				}
 			});
 
-			$('.audio-input-section .record-btn').on('touchend', function () {
-				event.preventDefault();
-
-				if(!self.hasInitWeixinSDK) return;
-
-				endTime = new Date().getTime();
-
-				if((endTime - startTime) < 300) {
-					startTime = endTime = 0;
-					clearTimeout(recordTimer);
-				} else {
-					wx.stopRecord({
-						success: function (res) {
-							$recordBtn.removeClass('active');
-							wx.uploadVoice({
-							    localId: res.localId,
-							    isShowProgressTips: 1,
-						        success: function (res) {
-							    	self.ajaxSendMessage({
-										replyType: 'VOICE',
-										mediaId: res.serverId
-									})
-									.done(function (data, status, xhr) {
-										if(data.code == 200) {
-											self.addMessageHtml(data.data);
-										} else {
-											$.toast('发送数据失败');
-										}
-									});
-							    },
-							    fail: function () {
-							    	$.toast('上传语音失败');
-							    }
-							});
-						}
-					});
+			$cancelBtn.on('click', function (event) {
+				if($recordBtn.hasClass('record')) {
+					recordTimer && clearTimeout(recordTimer);
+					wx.stopRecord();
+					resetRecord('record');
+				} else if($recordBtn.hasClass('send')) {
+					resetRecord('send');
 				}
 			});
 		},
@@ -416,13 +463,14 @@ define(function (require, exports, module) {
 			}
 		},
 		onClickStudentItem: function (event) {
-			var self = this, target = event.currentTarget, $list = $('#chat-page .chat-list');
+			var self = this, target = event.currentTarget;
 			
 			self.studentId = $(target).data('id');
 			self.hasInitChatPage = false;
 
-			$list.empty();
-			$.router.load('#chat-page', true);
+			setTimeout(function () {
+				$.router.load('#chat-page');
+			}, 200);
 		},
 		onClickMaterialItem: function (event) {
 			var self = this, target = event.currentTarget;
@@ -505,7 +553,7 @@ define(function (require, exports, module) {
 		ajaxLogin: function () {
 			return $.ajax({
 				type: 'POST',
-				url: BASE_URL + '/api/mng/auth',
+				url: 'http://stg-gambition.leanapp.cn' + '/api/mng/auth',
 				data: {
 					mobilePhoneNumber: this.mobilePhoneNumber,
 					password: this.password
@@ -584,7 +632,7 @@ define(function (require, exports, module) {
 					$list[dir](Mustache.render(self.audioMsgTpl, {item: item}));
 				break;
 				case 'MATERIAL':
-					$list[dir](Mustache.render(self.materialMsgTpl, {item: item}));
+					$list[dir](Mustache.render(self.materialMsgTpl, {item: item, clazzId: self.clazzId}));
 				break;
 			}
 

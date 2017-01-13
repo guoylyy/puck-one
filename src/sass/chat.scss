@@ -41,6 +41,7 @@
 				p {
 					font-size: .7rem;
 					margin: 0;
+					word-break: break-all;
 				}
 			}
 			.chat-audio-msg {
@@ -71,6 +72,7 @@
 				margin-top: .1rem;
 				padding: 0 .5rem;
 				box-shadow: 0 1px 1px 0 #d9dadc;
+				color: #333234;
 				.material-title {
 					line-height: 2.2rem;
 					text-overflow: ellipsis;
@@ -183,26 +185,79 @@
 			display: block;
 			background-color: #f6f6f6;
 			margin: 0 -.5rem;
-			padding-top: .8rem;
 			height: 5.6rem;
+			padding-top: .1rem;
+			.record-tip {
+				font-size: .5rem;
+				line-height: 1.3rem;
+				color: #9b9b9b;
+				height: 1.3rem;
+			}
 			.record-btn {
-				width: 2.6rem;
-				height: 2.6rem;
+				width: 2.3rem;
+				height: 2.3rem;
 				margin: 0 auto;
-				background-color: #fff;
+				background-color: #df4048;
 				border-radius: 50%;
 				padding: .3rem;
 				box-shadow: 0 1px 1px 0 #d9dadc;
 			 	user-select: none;
-				&.active {
-					background-color: #e64340;
-				}
+			 	line-height: 1.6rem;
+			 	.icon-chat {
+			 		margin-right: 0;
+			 	}
+			 	&.start {
+			 		.icon-chat-send-l, 
+			 		.icon-chat-pause-l {
+			 			display: none;
+			 		}
+			 	}
+			 	&.record {
+			 		.icon-chat-pause-l {
+			 			display: inline-block;
+			 		}
+			 		.icon-chat-send-l {
+			 			display: none;
+			 		}
+			 	}
+			 	&.send {
+			 		.icon-chat-pause-l {
+			 			display: none;
+			 		}
+			 		.icon-chat-send-l {
+			 			display: inline-block;
+			 		}
+			 	}
 			}
-			.record-tip {
+			.record-status {
 				font-size: .5rem;
-				line-height: 2rem;
+				line-height: 1.5rem;
 				color: #9b9b9b;
 				text-align: center;
+			}
+			.cancel-btn {
+				display: none;
+				position: absolute;
+				top: .8rem;
+				right: .8rem;
+				width: 2.5rem;
+				height: 1.5rem;
+				background-color: #fff;
+				box-shadow: 0 1px 1px 0 #d9dadc;
+				border-radius: .2rem;
+				font-size: .5rem;
+				line-height: 1.5rem;
+			}
+			&.active {
+				.record-btn {
+					background-color: #4a90e2;
+				}
+				.record-status {
+					color: #333234;
+				}
+				.cancel-btn {
+					display: block;
+				}
 			}
 		}
 	}

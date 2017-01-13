@@ -41,14 +41,19 @@
 				<div class="text-input-section">
 					 <div class="searchbar row">
 					    <div class="search-input col-80">
-					      	<input type="search" id='search'/>
+					      	<input type="search" id="search" maxlength="300"/>
 					    </div>
 					    <a class="button button-fill button-primary col-20">发送</a>
 					 </div>
 			  	</div>
 			  	<div class="audio-input-section">
-					<div class="record-btn"></div>
-					<div class="record-tip">按住开始录音</div>
+			  		<div class="record-tip"></div>
+					<div class="record-btn start">
+						<i class="icon-chat icon-chat-pause-l"></i>
+						<i class="icon-chat icon-chat-send-l"></i>
+					</div>
+					<div class="record-status">点击开始录音</div>
+					<div class="cancel-btn">取消</div>
 			  	</div>
 			</div>
 			<div class="content pull-to-refresh-content">

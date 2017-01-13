@@ -35,3 +35,11 @@
 .icon-chat-pause {
 	@include sprite($pause, inline-block);
 }
+
+.icon-chat-pause-l {
+	@include sprite($pause-l, inline-block);
+}
+
+.icon-chat-send-l {
+	@include sprite($send-l, inline-block);
+}

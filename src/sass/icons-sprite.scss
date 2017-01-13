@@ -6,6 +6,8 @@ $pause: -0px -67px 15px 19px;
 $play: -0px -86px 15px 20px;
 $microphone-active: -0px -106px 16px 21px;
 $microphone: -0px -126px 16px 21px;
+$send-l: -0px -147px 22px 22px;
+$pause-l: -0px -168px 18px 24px;
 @mixin sprite-width($sprite) {
   width: nth($sprite, 3);
 }
@@ -38,6 +40,6 @@ $microphone: -0px -126px 16px 21px;
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .icon-chat {
     background-image: url('../img/icons@2x.png');
-    background-size: 23px 147px;
+    background-size: 23px 192px;
   }
 }

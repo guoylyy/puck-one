@@ -4,7 +4,7 @@
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .icon-chat {
     background-image: url("../img/icons@2x.png");
-    background-size: 23px 147px; } }
+    background-size: 23px 192px; } }
 
 .icon-chat {
   vertical-align: middle; }
@@ -72,3 +72,19 @@
   display: inline-block;
   width: 15px;
   height: 19px; }
+
+.icon-chat-pause-l {
+  background-position: 0px -168px;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  display: inline-block;
+  width: 18px;
+  height: 24px; }
+
+.icon-chat-send-l {
+  background-position: 0px -147px;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  display: inline-block;
+  width: 22px;
+  height: 22px; }
