@@ -13,8 +13,10 @@ define(function (require, exports, module) {
 		isTeacher: false,
 		clazzId: null,
 		studentId: null,
+
 		hasInitChatPage: false,
 		hasInitWeixinSDK: false,
+		playVoiceAudio: null,
 
 		initialize: function () {
 			this.parseClazzId();
@@ -299,7 +301,7 @@ define(function (require, exports, module) {
 
 			$('.text-input-section .button').on('click', $.proxy(self.onClickSendTextBtn, self));
 
-			$('.chat-list').on('click', '.chat-audio-msg i', self.onClickVoiceItem);
+			$('.chat-list').on('click', '.chat-audio-msg .audio-bar', $.proxy(self.onClickVoiceItem, self));
 
 			if(self.isTeacher) {
 				$('.student-list .list-block').on('click', '.item-link', $.proxy(self.onClickStudentItem, self));
@@ -460,23 +462,38 @@ define(function (require, exports, module) {
 			});
 		},
 		onClickVoiceItem: function (event) {
-			var target = event.currentTarget, 
-				$bar = $(target).closest('.audio-bar'),
-				url = $bar.data('url');
+			var self = this, 
+				$target = $(event.currentTarget),
+				$status = $target.find('i'),
+				audioStatus = $status.hasClass('icon-chat-play') ? 'pause' : 'play';
+				audioUrl = $target.data('url');
 
-			if($(target).hasClass('icon-chat-play')) {
-				var sound = new Howl({
-				  	src: [url]
-				});
+			if(!self.playVoiceAudio) 
+				self.playVoiceAudio = $('#playVoiceAudio').get(0);
 
-				sound.once('load', function(){
-				  	$(target).addClass('icon-chat-pause').removeClass('icon-chat-play');
-					sound.play();
-				});
+			var playVoiceAudio = self.playVoiceAudio,
+				playVoiceAudioSource = $('#playVoiceAudio source').get(0);
 
-				sound.on('end', function(){
-				  	$(target).addClass('icon-chat-play').removeClass('icon-chat-pause');
-				});
+			if(audioStatus == 'pause') {
+				playVoiceAudioSource.src = audioUrl;
+				playVoiceAudio.load();
+				
+				var playPromise = playVoiceAudio.play();
+				if(playPromise != null) {
+					playPromise.catch(function () {});
+				}
+				(function ($el) {
+					playVoiceAudio.addEventListener('ended', function () {
+						$el.removeClass('icon-chat-pause').addClass('icon-chat-play');
+					});
+				})($status);
+
+				$('.chat-audio-msg .audio-bar i').removeClass('icon-chat-pause').addClass('icon-chat-play');
+				$status.addClass('icon-chat-pause').removeClass('icon-chat-play');
+			} else {
+				playVoiceAudio.pause();
+
+				$status.removeClass('icon-chat-pause').addClass('icon-chat-play');
 			}
 		},
 		ajaxLogin: function () {
@@ -623,9 +640,10 @@ define(function (require, exports, module) {
 						'<span class="chat-user-title">笃师</span>',
 						'{{/item.userInfo.isTeacher}}',
 					'</div>',
-					'<div class="chat-audio-msg">',
-						'<div class="audio-bar" data-url="{{item.url}}"><i class="icon-chat icon-chat-play"></i></div>',
-						'<div class="audio-time"></div>',
+					'<div class="chat-audio-msg" data-id="{{item.id}}">',
+						'<div class="audio-bar" data-url="{{item.url}}">',
+							'<i class="icon-chat icon-chat-play"></i>',
+						'</div>',
 					'</div>',
 				'</div>',
 			'</div>'
