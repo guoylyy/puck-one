@@ -75,7 +75,8 @@ define(function (require, exports, module) {
 				};
 
 			$(document).on('pageInit', '#student-page', function(e, pageId, $page) {
-				self.ajaxStudentList().done(function (data, status, xhr) {
+				var isWaitingOnly = $.trim($('.student-nav .show-option').html()) == '查看全部' ? true : false;
+				self.ajaxStudentList(null, null, isWaitingOnly).done(function (data, status, xhr) {
 					if(data.code == 200) {
 						var dataArr = data.data.values, 
 							sPaginator = data.data.paginator, 
@@ -318,6 +319,7 @@ define(function (require, exports, module) {
 			$('.chat-list').on('click', '.chat-audio-msg .audio-bar', $.proxy(self.onClickVoiceItem, self));
 
 			if(self.isTeacher) {
+				$('.student-nav .show-option').on('click', $.proxy(self.onClickStudentShowOption, self));
 				$('.student-list .list-block').on('click', '.item-link', $.proxy(self.onClickStudentItem, self));
 				$('.material-list .list-block').on('click', 'li', $.proxy(self.onClickMaterialItem, self));
 			}
@@ -472,6 +474,45 @@ define(function (require, exports, module) {
 				$.router.load('#chat-page');
 			}, 200);
 		},
+		onClickStudentShowOption: function (event) {
+			var self = this, $target = $(event.currentTarget), isWaitingOnly = true;
+
+			isWaitingOnly = $.trim($target.html()) == '查看全部' ? false : true;
+
+			self.ajaxStudentList().done(function (data, status, xhr) {
+				if(data.code == 200) {
+					var dataArr = data.data.values, 
+						sPaginator = data.data.paginator, 
+						$ul = $('<ul></ul>');
+
+					$.each(dataArr, function (index, item) {
+						item.status.key = item.status.key.toLowerCase();
+					  	var html = Mustache.render(self.studentFeedbackTpl, {id: item.id, userInfo: item.userInfo, status: item.status});
+						$ul.append(html);
+					});
+					
+					$('#student-page .list-block').empty().append($ul);
+
+					if(sPaginator.pageNumber >= sPaginator.totalPageNum) {
+						$.detachInfiniteScroll($('.student-list.infinite-scroll'));
+              			$('.student-list .infinite-scroll-preloader').remove();
+					} else {
+						if($('.student-list .infinite-scroll-preloader').length == 0) {
+							$('.student-list').append([
+								'<div class="infinite-scroll-preloader">',
+              						'<div class="preloader"></div>',
+          						'</div>'
+							].join(''));
+						}
+						$.attachInfiniteScroll($('.student-list.infinite-scroll'));
+					}
+
+					$target.html(isWaitingOnly ? '查看全部' : '只看未回复');
+				} else {
+					$.toast('获取数据失败');
+				}
+			});
+		},
 		onClickMaterialItem: function (event) {
 			var self = this, target = event.currentTarget;
 			
@@ -568,12 +609,12 @@ define(function (require, exports, module) {
 				dataType: 'json'
 			});
 		},
-		ajaxStudentList: function (pageNumber, pageSize) {
-			var pNum = pageNumber || 1, pSize = pageSize || 20;
+		ajaxStudentList: function (pageNumber, pageSize, isWaitingOnly) {
+			var pNum = pageNumber || 1, pSize = pageSize || 20, isWaitingOnly = isWaitingOnly ? true : false;
 
 			return $.ajax({
 				type: 'GET',
-				url: BASE_URL + '/api/course/' + this.clazzId + '/feedbacks?pageNumber=' + pNum + '&pageSize=' + pSize,
+				url: BASE_URL + '/api/course/' + this.clazzId + '/feedbacks?pageNumber=' + pNum + '&pageSize=' + pSize + '&isWaitingOnly=' + isWaitingOnly,
 				dataType: 'json'
 			});
 		},
