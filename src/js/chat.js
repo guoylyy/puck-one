@@ -307,6 +307,12 @@ define(function (require, exports, module) {
 				$('.student-list .list-block').on('click', '.item-link', $.proxy(self.onClickStudentItem, self));
 				$('.material-list .list-block').on('click', 'li', $.proxy(self.onClickMaterialItem, self));
 			}
+
+			$('#search').on('focus', function () {
+				setTimeout(function() {
+    				document.body.scrollTop = document.body.scrollHeight
+				}, 600);
+			});
 		},
 		bindVoiceRecordEvents: function () {
 			var self = this, 
