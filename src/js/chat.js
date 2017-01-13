@@ -526,7 +526,7 @@ define(function (require, exports, module) {
 		ajaxMessageList: function (pageSize, startDate) {
 			var pSize = pageSize || 5, sDate = startDate || null;
 
-			var url = this.isTeacher ? (BASE_URL + '/api/course/' + this.clazzId + '/feedback/' + this.studentId) : (BASE_URL + '/weh5/course/' + this.clazzId + '/feedback');
+			var url = this.isTeacher ? (BASE_URL + '/api/course/' + this.clazzId + '/feedback/' + this.studentId) : (BASE_URL + '/api/course/' + this.clazzId + '/feedback');
 
 			url += '?pageSize=' + pSize + (sDate ? ('&startDate=' + startDate) : '');
 
@@ -546,7 +546,7 @@ define(function (require, exports, module) {
 			});
 		},
 		ajaxSendMessage: function (data) {
-			var url = this.isTeacher ? (BASE_URL + '/api/course/' + this.clazzId + '/feedback/' + this.studentId) : (BASE_URL + '/weh5/course/' + this.clazzId + '/feedback');
+			var url = this.isTeacher ? (BASE_URL + '/api/course/' + this.clazzId + '/feedback/' + this.studentId) : (BASE_URL + '/api/course/' + this.clazzId + '/feedback');
 
 			return $.ajax({
 				type: 'POST',
