@@ -31,6 +31,11 @@ define(function (require, exports, module) {
 			this.clazzId = pathname.slice(index + 1);
 		},
 		initAjax: function () {
+			$(document).on('ajaxSuccess', function (event, xhr, options, data) {
+				if(data.code == 503 || data.code == 555) {
+					window.location.href = '/weh5/course/index';
+				}
+			});
 			$(document).on('ajaxSend', function () {
 				$.showIndicator();
 			});
