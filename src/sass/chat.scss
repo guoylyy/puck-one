@@ -357,6 +357,101 @@
 	}
 }
 
+.material-detail {
+	background-color: #fff;
+	.content-block {
+		margin: 1rem 0;
+		.detail-container {
+			.weui_article {
+				section {
+					font-family: Georgia, Helvetica, "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+
+					&:lang(zh) {
+					    font-family: "Helvetica Neue", "Microsoft YaHei", sans-serif;
+					}
+
+					h1 {
+					    font-size: 1.474em;
+					}
+					h2 {
+					    font-size: 1.374em;
+					}
+					h3 {
+					    font-size: 1.229em;
+					}
+
+					code, kbd, pre, samp {
+					    background: #eee;
+					    font-size: 0.9375em;
+					    line-height: 1.6;
+					    margin-bottom: 0.6em;
+					    max-width: 100%;
+					    overflow: auto;
+					    padding: 0.25em;
+					}
+
+					blockquote {
+					    border-left-style: solid;
+					    border-left-width: 7px;
+					    border-left-color: #719430;
+					    padding-left: 1.25em;
+					    margin-bottom: 1em;
+					    margin-right: 1em;
+					    line-height: 1.5em;
+					}
+
+					ol, ul {
+					   	padding-left: 2em;
+					}
+
+					img {
+					    margin: auto;
+					    max-width: 100%;
+					}
+
+					audio {
+					    margin-top: 1em;
+					    margin-bottom: 1em;
+					    width: 100%;
+					}
+
+					audio, video {
+					    transition: all 0.5s linear;
+					    box-shadow: 2px 2px 4px 0 grey;
+					    border-radius: 7px 7px 7px 7px;
+					    background-color: grey;
+					}
+
+					video {
+					    width: 100%;
+					    height: 240px;
+					}
+
+					p {
+					    letter-spacing: 0.05em;
+					    word-spacing: 0.1em;
+					    color: #545454;
+					    margin: 0 0;
+					    hyphens: auto;
+					    text-align: justify;
+					    -webkit-hyphens: auto;
+					    -moz-hyphens: auto;
+					}
+				}
+			}
+		}
+		.back-btn {
+			font-size: .7rem;
+			line-height: 1.75rem;
+			height: 1.75rem;
+			color: #000;
+			border: 1px solid #979797;
+			background-color: #fff;
+			margin: 1rem 0;
+		}
+	}
+}
+
 .student-list {
 	.list-block {
 		margin: .75rem 0;

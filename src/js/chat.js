@@ -312,7 +312,8 @@ define(function (require, exports, module) {
 
 			$('.text-input-section .button').on('click', $.proxy(self.onClickSendTextBtn, self));
 
-			$('.chat-list').on('click', '.chat-audio-msg .audio-bar', $.proxy(self.onClickVoiceItem, self));
+			$('.chat-list').on('click', '.chat-audio-msg .audio-bar', $.proxy(self.onClickVoiceMsg, self));
+			$('.chat-list').on('click', '.chat-material-msg', $.proxy(self.onClickMaterialMsg, self));
 
 			if(self.isTeacher) {
 				$('.student-nav .show-option').on('click', $.proxy(self.onClickStudentShowOption, self));
@@ -562,7 +563,7 @@ define(function (require, exports, module) {
 				}
 			});
 		},
-		onClickVoiceItem: function (event) {
+		onClickVoiceMsg: function (event) {
 			var self = this, 
 				$target = $(event.currentTarget),
 				$status = $target.find('i'),
@@ -596,6 +597,26 @@ define(function (require, exports, module) {
 
 				$status.removeClass('icon-chat-pause').addClass('icon-chat-play');
 			}
+		},
+		onClickMaterialMsg: function (event) {
+			var $target = $(event.currentTarget),
+				materialId = $target.data('id');
+
+			this.ajaxMaterialDetail(materialId).done(function (data, status, xhr) {
+				if(data.code == 200) {
+					var $material = $(data.data),
+						$title = $material.find('.ui-header-title');
+						$article = $material.find('.weui_article');
+
+					$('.material-detail-nav .title').html($title[0].innerHTML);
+					$('.material-detail .detail-container').html($article[0].outerHTML);
+					setTimeout(function () {
+						$.router.load('#material-detail-page');
+					}, 200);
+				} else {
+					$.toast('获取数据失败');
+				}
+			});
 		},
 		ajaxLogin: function () {
 			return $.ajax({
@@ -646,6 +667,13 @@ define(function (require, exports, module) {
 				dataType: 'json'
 			});
 		},
+		ajaxMaterialDetail: function (materialId) {
+			return $.ajax({
+				type: 'GET',
+				url: BASE_URL + '/api/course/' + this.clazzId + '/feedbackMaterial/' + materialId,
+				dataType: 'json'
+			});
+		},
 		ajaxSendMessage: function (data) {
 			var url = this.isTeacher ? (BASE_URL + '/api/course/' + this.clazzId + '/feedback/' + this.studentId) : (BASE_URL + '/api/course/' + this.clazzId + '/feedback');
 
@@ -679,7 +707,7 @@ define(function (require, exports, module) {
 					$list[dir](Mustache.render(self.audioMsgTpl, {item: item}));
 				break;
 				case 'MATERIAL':
-					$list[dir](Mustache.render(self.materialMsgTpl, {item: item, clazzId: self.clazzId}));
+					$list[dir](Mustache.render(self.materialMsgTpl, {item: item}));
 				break;
 			}
 
@@ -761,11 +789,11 @@ define(function (require, exports, module) {
 						'<span class="chat-user-title">笃师</span>',
 						'{{/item.userInfo.isTeacher}}',
 					'</div>',
-					'<a href="/weh5/course/{{clazzId}}/feedbackMaterial/{{item.materialId}}" class="chat-material-msg">',
+					'<div data-id="{{item.materialId}}" class="chat-material-msg">',
 						'<div class="material-title">{{item.title}}</div>',
 						'<div class="material-line"></div>',
 						'<div class="material-author">作者: {{item.author}}<i class="icon icon-right"></i></div>',
-					'</a>',
+					'</div>',
 				'</div>',
 			'</div>'
 		].join('')
