@@ -31,19 +31,17 @@ define(function (require, exports, module) {
 			this.clazzId = pathname.slice(index + 1);
 		},
 		initAjax: function () {
-			$(document).on('ajaxSuccess', function (event, xhr, options, data) {
-				if(data.code == 503 || data.code == 555) {
-					window.location.href = '/weh5/course/index';
-				}
-			});
 			$(document).on('ajaxSend', function () {
 				$.showIndicator();
 			});
 			$(document).on('ajaxComplete', function () {
 				$.hideIndicator();
 			});
-			$(document).on('ajaxError', function () {
+			$(document).on('ajaxError', function (event, xhr) {
 				$.toast('请求失败');
+				if(xhr.status == 401 || xhr.status == 555) {
+					window.location.href = '/weh5/course/index';
+				}
 			});
 		},
 		initLogin: function () {
@@ -589,11 +587,11 @@ define(function (require, exports, module) {
 				if(playPromise != null) {
 					playPromise.catch(function () {});
 				}
-				(function ($el) {
-					playVoiceAudio.addEventListener('ended', function () {
-						$el.removeClass('icon-chat-pause').addClass('icon-chat-play');
-					});
-				})($status);
+				
+				$(playVoiceAudio).off();
+				$(playVoiceAudio).on('ended', function () {
+					$status.removeClass('icon-chat-pause').addClass('icon-chat-play');
+				});
 
 				$('.chat-audio-msg .audio-bar i').removeClass('icon-chat-pause').addClass('icon-chat-play');
 				$status.addClass('icon-chat-pause').removeClass('icon-chat-play');
