@@ -186,11 +186,21 @@
         border-radius: .2rem;
         font-size: .5rem;
         line-height: 1.5rem; }
+      .chat-footer.chat-audio-active .audio-input-section .record-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 5.6rem;
+        z-index: 12; }
       .chat-footer.chat-audio-active .audio-input-section.active .record-btn {
         background-color: #4a90e2; }
       .chat-footer.chat-audio-active .audio-input-section.active .record-status {
         color: #333234; }
       .chat-footer.chat-audio-active .audio-input-section.active .cancel-btn {
+        display: block; }
+      .chat-footer.chat-audio-active .audio-input-section.active .record-overlay {
         display: block; }
   .chat-footer .text-input-section, .chat-footer .audio-input-section {
     display: none; }

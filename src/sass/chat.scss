@@ -248,6 +248,15 @@
 				font-size: .5rem;
 				line-height: 1.5rem;
 			}
+			.record-overlay {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 5.6rem;
+				z-index: 12;
+			}
 			&.active {
 				.record-btn {
 					background-color: #4a90e2;
@@ -256,6 +265,9 @@
 					color: #333234;
 				}
 				.cancel-btn {
+					display: block;
+				}
+				.record-overlay {
 					display: block;
 				}
 			}

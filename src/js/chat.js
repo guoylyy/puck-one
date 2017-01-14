@@ -755,11 +755,11 @@ define(function (require, exports, module) {
 						'<span class="chat-user-title">笃师</span>',
 						'{{/item.userInfo.isTeacher}}',
 					'</div>',
-					'<div class="chat-material-msg">',
+					'<a href="/weh5/course/{{clazzId}}/feedbackMaterial/{{item.materialId}}" class="chat-material-msg">',
 						'<div class="material-title">{{item.title}}</div>',
 						'<div class="material-line"></div>',
 						'<div class="material-author">作者: {{item.author}}<i class="icon icon-right"></i></div>',
-					'</div>',
+					'</a>',
 				'</div>',
 			'</div>'
 		].join('')
