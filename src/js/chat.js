@@ -146,10 +146,6 @@ define(function (require, exports, module) {
 				}
 			});
 
-			$(document).on('beforePageSwitch', '#chat-page', function () {
-				self.resetChatPageHtml();
-			});
-
 			$(document).on('refresh', '#chat-page .pull-to-refresh-content', function (e) {
 				var startDate = null, pageSize = 5;
 
@@ -238,7 +234,7 @@ define(function (require, exports, module) {
 				$.router.load('#student-page');
 
 				$('#chat-page .bar-nav').prepend([
-					'<a class="button button-link button-nav pull-left" href="#student-page">',
+					'<a class="button button-link button-nav pull-left chat-page-back">',
 			      		'<span class="icon icon-left"></span>',
 			    	'</a>'
 				].join(''));
@@ -321,6 +317,7 @@ define(function (require, exports, module) {
 			if(self.isTeacher) {
 				$('.student-nav .show-option').on('click', $.proxy(self.onClickStudentShowOption, self));
 				$('.student-list .list-block').on('click', '.item-link', $.proxy(self.onClickStudentItem, self));
+				$('.chat-nav .chat-page-back').on('click', $.proxy(self.onClickChatBack, self));
 				$('.material-list .list-block').on('click', 'li', $.proxy(self.onClickMaterialItem, self));
 			}
 
@@ -479,7 +476,7 @@ define(function (require, exports, module) {
 
 			isWaitingOnly = $.trim($target.html()) == '查看全部' ? false : true;
 
-			self.ajaxStudentList().done(function (data, status, xhr) {
+			self.ajaxStudentList(null, null, isWaitingOnly).done(function (data, status, xhr) {
 				if(data.code == 200) {
 					var dataArr = data.data.values, 
 						sPaginator = data.data.paginator, 
@@ -512,6 +509,15 @@ define(function (require, exports, module) {
 					$.toast('获取数据失败');
 				}
 			});
+		},
+		onClickChatBack: function () {
+			this.resetChatPageHtml();
+
+			if(this.playVoiceAudio && !this.playVoiceAudio.paused) {
+				this.playVoiceAudio.pause();
+			}
+
+			$.router.load('#student-page');
 		},
 		onClickMaterialItem: function (event) {
 			var self = this, target = event.currentTarget;
