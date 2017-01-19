@@ -345,6 +345,8 @@
     .student-list .list-block .item-content .item-inner .item-after.waiting {
       color: #fff;
       background-color: #4a90e2; }
+    .student-list .list-block .item-content .item-inner .item-after.submitting {
+      border: 1px solid #d9dadc; }
 
 .student-nav .button-nav.pull-right.show-option {
   font-size: .6rem;

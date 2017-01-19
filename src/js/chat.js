@@ -78,30 +78,42 @@ define(function (require, exports, module) {
 					pageNumber: 1
 				};
 
-			$(document).on('pageInit', '#student-page', function(e, pageId, $page) {
-				var isWaitingOnly = $.trim($('.student-nav .show-option').html()) == '查看全部' ? true : false;
-				self.ajaxStudentList(null, null, isWaitingOnly).done(function (data, status, xhr) {
+			var renderStudentPageHtml = function (pageNumber, pageSize, isWaitingOnly, callback) {
+				self.ajaxStudentList(pageNumber, pageSize, isWaitingOnly).done(function (data, status, xhr) {
 					if(data.code == 200) {
 						var dataArr = data.data.values, 
-							sPaginator = data.data.paginator, 
 							$ul = $('<ul></ul>');
+
+						sPaginator = data.data.paginator;
 
 						$.each(dataArr, function (index, item) {
 							item.status.key = item.status.key.toLowerCase();
 						  	var html = Mustache.render(self.studentFeedbackTpl, {id: item.id, userInfo: item.userInfo, status: item.status});
 							$ul.append(html);
 						});
-						
-						$('#student-page .list-block').empty().append($ul);
+
+						$('#student-page .list-block').append($ul);
 
 						if(sPaginator.pageNumber >= sPaginator.totalPageNum) {
 							$.detachInfiniteScroll($('.student-list.infinite-scroll'));
-                  			$('.student-list .infinite-scroll-preloader').remove();
+	              			$('.student-list .infinite-scroll-preloader').remove();
+						} else {
+							$.attachInfiniteScroll($('.student-list.infinite-scroll'));
 						}
+
 					} else {
 						$.toast('获取数据失败');
 					}
+					$.refreshScroller();
+
+					callback && callback();
 				});
+			};
+
+			$(document).on('pageInit', '#student-page', function(e, pageId, $page) {
+				var isWaitingOnly = $.trim($('.student-nav .show-option').html()) == '查看全部' ? true : false;
+				$('#student-page .list-block').empty();
+				renderStudentPageHtml(null, null, isWaitingOnly);
 			});
 
 			$(document).on('infinite', '.student-list', function () {
@@ -111,26 +123,30 @@ define(function (require, exports, module) {
 				sLoading = true;
 				sPaginator.pageNumber++;
 
-				self.ajaxStudentList(sPaginator.pageNumber, sPaginator.pageSize).done(function (data, status, xhr) {
-					if(data.code == 200) {
-						var dataArr = data.data.values, 
-							sPaginator = data.data.paginator;
+				var isWaitingOnly = $.trim($('.student-nav .show-option').html()) == '查看全部' ? true : false;
 
-						$.each(dataArr, function (index, item) {
-							item.status.key = item.status.key.toLowerCase();
-						  	var html = Mustache.render(self.studentFeedbackTpl, {id: item.id, userInfo: item.userInfo, status: item.status});
-							$('#student-page .list-block ul').append(html);
-						});
-
-						if(sPaginator.pageNumber >= sPaginator.totalPageNum) {
-							$.detachInfiniteScroll($('.student-list.infinite-scroll'));
-                  			$('.student-list .infinite-scroll-preloader').remove();
-						}
-					} else {
-						$.toast('获取数据失败');
-					}
+				renderStudentPageHtml(sPaginator.pageNumber, sPaginator.pageSize, isWaitingOnly, function () {
 					sLoading = false;
-					$.refreshScroller();
+				});
+			});
+
+			$(document).on('click', '.student-nav .show-option', function (event) {
+				var $target = $(event.currentTarget), isWaitingOnly = true;
+
+				isWaitingOnly = $.trim($target.html()) == '查看全部' ? false : true;
+				
+				$('#student-page .list-block').empty();
+
+				if($('.student-list .infinite-scroll-preloader').length == 0) {
+					$('.student-list').append([
+						'<div class="infinite-scroll-preloader">',
+	  						'<div class="preloader"></div>',
+							'</div>'
+					].join(''));
+				}
+
+				renderStudentPageHtml(null, null, isWaitingOnly, function () {
+					$target.html(isWaitingOnly ? '查看全部' : '只看未回复');
 				});
 			});
 
@@ -320,7 +336,6 @@ define(function (require, exports, module) {
 			$('.chat-list').on('click', '.chat-material-msg', $.proxy(self.onClickMaterialMsg, self));
 
 			if(self.isTeacher) {
-				$('.student-nav .show-option').on('click', $.proxy(self.onClickStudentShowOption, self));
 				$('.student-list .list-block').on('click', '.item-link', $.proxy(self.onClickStudentItem, self));
 				$('.chat-nav .chat-page-back').on('click', $.proxy(self.onClickChatBack, self));
 				$('.material-list .list-block').on('click', 'li', $.proxy(self.onClickMaterialItem, self));
@@ -476,45 +491,6 @@ define(function (require, exports, module) {
 				self.resetChatPageHtml();
 				$.router.load('#chat-page');
 			}, 200);
-		},
-		onClickStudentShowOption: function (event) {
-			var self = this, $target = $(event.currentTarget), isWaitingOnly = true;
-
-			isWaitingOnly = $.trim($target.html()) == '查看全部' ? false : true;
-
-			self.ajaxStudentList(null, null, isWaitingOnly).done(function (data, status, xhr) {
-				if(data.code == 200) {
-					var dataArr = data.data.values, 
-						sPaginator = data.data.paginator, 
-						$ul = $('<ul></ul>');
-
-					$.each(dataArr, function (index, item) {
-						item.status.key = item.status.key.toLowerCase();
-					  	var html = Mustache.render(self.studentFeedbackTpl, {id: item.id, userInfo: item.userInfo, status: item.status});
-						$ul.append(html);
-					});
-					
-					$('#student-page .list-block').empty().append($ul);
-
-					if(sPaginator.pageNumber >= sPaginator.totalPageNum) {
-						$.detachInfiniteScroll($('.student-list.infinite-scroll'));
-              			$('.student-list .infinite-scroll-preloader').remove();
-					} else {
-						if($('.student-list .infinite-scroll-preloader').length == 0) {
-							$('.student-list').append([
-								'<div class="infinite-scroll-preloader">',
-              						'<div class="preloader"></div>',
-          						'</div>'
-							].join(''));
-						}
-						$.attachInfiniteScroll($('.student-list.infinite-scroll'));
-					}
-
-					$target.html(isWaitingOnly ? '查看全部' : '只看未回复');
-				} else {
-					$.toast('获取数据失败');
-				}
-			});
 		},
 		onClickChatBack: function () {
 			this.voicePlayer && this.voicePlayer.unload();
@@ -706,8 +682,6 @@ define(function (require, exports, module) {
 				$content = $('#chat-page .content'),
 				$list = $('#chat-page .chat-list'), 
 				dir = direction || 'append';
-
-			item.date = item.date.slice(0, 10) + ' ' + item.date.slice(11, 19);
 
 			switch(item.type) {
 				case 'TEXT':

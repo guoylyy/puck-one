@@ -477,6 +477,9 @@
 						color: #fff;
 						background-color: #4a90e2;
 					}
+					&.submitting {
+						border: 1px solid #d9dadc;
+					}
 					&.closed {
 						
 					}
