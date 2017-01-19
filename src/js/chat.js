@@ -16,7 +16,8 @@ define(function (require, exports, module) {
 
 		hasInitChatPage: false,
 		hasInitWeixinSDK: false,
-		playVoiceAudio: null,
+		voicePlayer: null,
+		voiceLoading: false,
 
 		initialize: function () {
 			this.parseClazzId();
@@ -472,6 +473,7 @@ define(function (require, exports, module) {
 			self.hasInitChatPage = false;
 
 			setTimeout(function () {
+				self.resetChatPageHtml();
 				$.router.load('#chat-page');
 			}, 200);
 		},
@@ -515,11 +517,8 @@ define(function (require, exports, module) {
 			});
 		},
 		onClickChatBack: function () {
-			this.resetChatPageHtml();
-
-			if(this.playVoiceAudio && !this.playVoiceAudio.paused) {
-				this.playVoiceAudio.pause();
-			}
+			this.voicePlayer && this.voicePlayer.unload();
+			this.voiceLoading = false;
 
 			$.router.load('#student-page');
 		},
@@ -567,37 +566,45 @@ define(function (require, exports, module) {
 			});
 		},
 		onClickVoiceMsg: function (event) {
-			var self = this, 
+			var self = this,
 				$target = $(event.currentTarget),
 				$status = $target.find('i'),
-				audioStatus = $status.hasClass('icon-chat-play') ? 'pause' : 'play';
-				audioUrl = $target.data('url');
+				voiceStatus = $status.hasClass('icon-chat-play') ? 'pause' : 'play';
+				voiceUrl = $target.data('url');
 
-			if(!self.playVoiceAudio) 
-				self.playVoiceAudio = $('#playVoiceAudio').get(0);
+			if(self.voiceLoading) return;
 
-			var playVoiceAudio = self.playVoiceAudio,
-				playVoiceAudioSource = $('#playVoiceAudio source').get(0);
+			if(voiceStatus == 'pause') {
+				self.voicePlayer && self.voicePlayer.unload();
 
-			if(audioStatus == 'pause') {
-				playVoiceAudioSource.src = audioUrl;
-				playVoiceAudio.load();
-				
-				var playPromise = playVoiceAudio.play();
-				if(playPromise != null) {
-					playPromise.catch(function () {});
-				}
-				
-				$(playVoiceAudio).off();
-				$(playVoiceAudio).on('ended', function () {
-					$status.removeClass('icon-chat-pause').addClass('icon-chat-play');
+				var voice = self.voicePlayer = new Howl({
+					src: [voiceUrl]
 				});
 
-				$('.chat-audio-msg .audio-bar i').removeClass('icon-chat-pause').addClass('icon-chat-play');
-				$status.addClass('icon-chat-pause').removeClass('icon-chat-play');
-			} else {
-				playVoiceAudio.pause();
+				self.voiceLoading = true;
+				$status.addClass('icon-chat-loading');
 
+				voice.once('load', function () {
+					self.voiceLoading = false;
+					$status.removeClass('icon-chat-loading');
+
+					voice.play();
+					$('.chat-audio-msg .audio-bar i').removeClass('icon-chat-pause').addClass('icon-chat-play');
+					$status.addClass('icon-chat-pause').removeClass('icon-chat-play');
+				});
+
+				voice.once('loaderror', function () {
+					self.voiceLoading = false;
+					$status.removeClass('icon-chat-loading');
+
+					$.toast('加载语音失败');
+				});
+
+				voice.once('end', function () {
+					$status.removeClass('icon-chat-pause').addClass('icon-chat-play');
+				});
+			} else {
+				self.voicePlayer && self.voicePlayer.stop();
 				$status.removeClass('icon-chat-pause').addClass('icon-chat-play');
 			}
 		},
