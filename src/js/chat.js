@@ -79,6 +79,8 @@ define(function (require, exports, module) {
 				};
 
 			var renderStudentPageHtml = function (pageNumber, pageSize, isWaitingOnly, callback) {
+				sLoading = true;
+				
 				self.ajaxStudentList(pageNumber, pageSize, isWaitingOnly).done(function (data, status, xhr) {
 					if(data.code == 200) {
 						var dataArr = data.data.values, 
@@ -104,6 +106,7 @@ define(function (require, exports, module) {
 					} else {
 						$.toast('获取数据失败');
 					}
+					sLoading = false;
 					$.refreshScroller();
 
 					callback && callback();
@@ -120,14 +123,11 @@ define(function (require, exports, module) {
 				if(sLoading) return;
 				if(sPaginator.pageNumber >= sPaginator.totalPageNum) return;
 
-				sLoading = true;
 				sPaginator.pageNumber++;
 
 				var isWaitingOnly = $.trim($('.student-nav .show-option').html()) == '查看全部' ? true : false;
 
-				renderStudentPageHtml(sPaginator.pageNumber, sPaginator.pageSize, isWaitingOnly, function () {
-					sLoading = false;
-				});
+				renderStudentPageHtml(sPaginator.pageNumber, sPaginator.pageSize, isWaitingOnly);
 			});
 
 			$(document).on('click', '.student-nav .show-option', function (event) {
