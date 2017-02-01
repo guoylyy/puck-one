@@ -401,12 +401,12 @@ define(function (require, exports, module) {
 							$audioInputSection.addClass('active');
 
 							$recordBtn.removeClass('start').addClass('record');
-							$recordTip.text('满60s自动发送');
+							$recordTip.text('满30s自动发送');
 							$recordStatus.text('录音中');
 
 							recordTimer = setTimeout(function () {
 								stopRecord();
-							}, 59000);
+							}, 29000);
 						},
 						fail: function () {
 							$.toast('开始录音失败');
