@@ -76,12 +76,13 @@ define(function (require, exports, module) {
 				mPaginator = {
 					pageSize: 20,
 					pageNumber: 1
-				};
+				},
+				searchTimer = null;
 
-			var renderStudentPageHtml = function (pageNumber, pageSize, isWaitingOnly, callback) {
+			var renderStudentPageHtml = function (pageNumber, pageSize, isWaitingOnly, keyWord, callback) {
 				sLoading = true;
 				
-				self.ajaxStudentList(pageNumber, pageSize, isWaitingOnly).done(function (data, status, xhr) {
+				self.ajaxStudentList(pageNumber, pageSize, isWaitingOnly, keyWord).done(function (data, status, xhr) {
 					if(data.code == 200) {
 						var dataArr = data.data.values, 
 							$ul = $('<ul></ul>');
@@ -114,9 +115,10 @@ define(function (require, exports, module) {
 			};
 
 			$(document).on('pageInit', '#student-page', function(e, pageId, $page) {
-				var isWaitingOnly = $.trim($('.student-nav .show-option').html()) == '查看全部' ? true : false;
+				var isWaitingOnly = $.trim($('.student-nav .show-option').html()) == '查看全部' ? true : false,
+					keyWord = $.trim($('.search-input-section input').val());
 				$('#student-page .list-block').empty();
-				renderStudentPageHtml(null, null, isWaitingOnly);
+				renderStudentPageHtml(null, null, isWaitingOnly, keyWord);
 			});
 
 			$(document).on('infinite', '.student-list', function () {
@@ -125,13 +127,14 @@ define(function (require, exports, module) {
 
 				sPaginator.pageNumber++;
 
-				var isWaitingOnly = $.trim($('.student-nav .show-option').html()) == '查看全部' ? true : false;
+				var isWaitingOnly = $.trim($('.student-nav .show-option').html()) == '查看全部' ? true : false,
+					keyWord = $.trim($('.search-input-section input').val());
 
-				renderStudentPageHtml(sPaginator.pageNumber, sPaginator.pageSize, isWaitingOnly);
+				renderStudentPageHtml(sPaginator.pageNumber, sPaginator.pageSize, isWaitingOnly, keyWord);
 			});
 
 			$(document).on('click', '.student-nav .show-option', function (event) {
-				var $target = $(event.currentTarget), isWaitingOnly = true;
+				var $target = $(event.currentTarget), isWaitingOnly = true, keyWord = $.trim($('.search-input-section input').val());
 
 				isWaitingOnly = $.trim($target.html()) == '查看全部' ? false : true;
 				
@@ -145,9 +148,40 @@ define(function (require, exports, module) {
 					].join(''));
 				}
 
-				renderStudentPageHtml(null, null, isWaitingOnly, function () {
+				renderStudentPageHtml(null, null, isWaitingOnly, keyWord, function () {
 					$target.html(isWaitingOnly ? '查看全部' : '只看未回复');
 				});
+			});
+
+			$('.search-input-section input').bind('input', function () {
+				searchTimer && clearTimeout(searchTimer);
+
+				searchTimer = setTimeout(function () {
+					var keyWord = $.trim($('.search-input-section input').val()), 
+						isWaitingOnly = $.trim($('.student-nav .show-option').html()) == '查看全部' ? true : false;
+					
+					$('#student-page .list-block').empty();
+
+					if($('.student-list .infinite-scroll-preloader').length == 0) {
+						$('.student-list').append([
+							'<div class="infinite-scroll-preloader">',
+		  						'<div class="preloader"></div>',
+								'</div>'
+						].join(''));
+					}
+
+					renderStudentPageHtml(null, null, isWaitingOnly, keyWord);
+				}, 1000);
+			});
+
+			$('.search-input-section .searchbar-cancel').bind('click', function (event) {
+				$('.search-input-section input').val('');
+
+				var isWaitingOnly = $.trim($('.student-nav .show-option').html()) == '查看全部' ? true : false;
+					keyWord = $.trim($('.search-input-section input').val());
+
+				$('#student-page .list-block').empty();
+				renderStudentPageHtml(null, null, isWaitingOnly, keyWord);
 			});
 
 			$(document).on('pageInit', '#chat-page', function (e, pageId, $page) {
@@ -341,7 +375,7 @@ define(function (require, exports, module) {
 				$('.material-list .list-block').on('click', 'li', $.proxy(self.onClickMaterialItem, self));
 			}
 
-			$('#search').on('focus', function () {
+			$('.text-input-section input').on('focus', function () {
 				setTimeout(function() {
     				document.body.scrollTop = document.body.scrollHeight
 				}, 600);
@@ -622,12 +656,14 @@ define(function (require, exports, module) {
 				dataType: 'json'
 			});
 		},
-		ajaxStudentList: function (pageNumber, pageSize, isWaitingOnly) {
-			var pNum = pageNumber || 1, pSize = pageSize || 20, isWaitingOnly = isWaitingOnly ? true : false;
+		ajaxStudentList: function (pageNumber, pageSize, isWaitingOnly, keyWord) {
+			var pNum = pageNumber || 1, 
+				pSize = pageSize || 20, 
+				isWaitingOnly = isWaitingOnly ? true : false;
 
 			return $.ajax({
 				type: 'GET',
-				url: BASE_URL + '/api/course/' + this.clazzId + '/feedbacks?pageNumber=' + pNum + '&pageSize=' + pSize + '&isWaitingOnly=' + isWaitingOnly,
+				url: BASE_URL + '/api/course/' + this.clazzId + '/feedbacks?pageNumber=' + pNum + '&pageSize=' + pSize + '&isWaitingOnly=' + isWaitingOnly + '&keyWord=' + keyWord,
 				dataType: 'json'
 			});
 		},

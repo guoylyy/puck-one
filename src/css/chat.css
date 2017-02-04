@@ -328,8 +328,16 @@
       background-color: #fff;
       margin: 1rem 0; }
 
+.student-list .search-input-section {
+  height: 2.2rem;
+  padding-right: .5rem;
+  padding-left: .5rem; }
+  .student-list .search-input-section .searchbar-cancel {
+    color: #4a90e2;
+    font-size: .7rem; }
+
 .student-list .list-block {
-  margin: .75rem 0; }
+  margin: 0 0 .75rem; }
   .student-list .list-block .item-content .item-media img {
     width: 1.8rem;
     height: 1.8rem;
