@@ -743,7 +743,7 @@ define(function (require, exports, module) {
 						'<img src="{{userInfo.headimgurl}}">',
 					'</div>',
 					'<div class="item-inner">',
-         	 			'<div class="item-title">{{userInfo.name}}</div>',
+         	 			'<div class="item-title">{{userInfo.studentNumber}} | {{userInfo.name}}</div>',
          	 			'<div class="item-after {{status.key}}">{{status.name}}</div>',
 					'</div>',
 				'</a>',
